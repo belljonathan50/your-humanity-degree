@@ -1,29 +1,7 @@
-# `soundworks-template`
+# Your Humanity Degree
 
-> Project template for developing [*soundworks*](https://github.com/collective-soundworks/soundworks/) applications.
+### Web application for Huihui Cheng's interactive piece for ensemble and smartphones "Your Humanity Degree"
 
-_For a complete documentation of *soundworks*, please refer to [http://collective-soundworks.github.io](http://collective-soundworks.github.io)_
+The application is based on the [soundworks](https://github.com/collective-soundworks/soundworks) framework.
 
-## Creating a new application
-
-```sh
-git clone https://github.com/collective-soundworks/soundworks-template.git my-application
-cd my-application
-rm -Rf .git
-npm install
-npm run dev
-```
-
-## Internal tools
-
-### `@soundworks/template-build`
-
-The [`@soundworks/template-build`](https://github.com/collective-soundworks/soundworks-template-build) package contains all the build scripts for the `soundworks-template`
-
-### `@soundworks/template-helpers`
-
-The [`@soundworks/template-helpers`](https://github.com/collective-soundworks/soundworks-template-helpers) package contains common helpers (views, etc.) shared by most the applications.
-
-## License
-
-BSD-3-Clause
+The piece is dedicated to Beethoven’s 250 anniversary, commissioned by Ensemble consord and supported by Siemens foundation and BTHVN2020.
