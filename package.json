@@ -1,0 +1,47 @@
+{
+  "name": "your-humanity-degree",
+  "authors": [
+    "Benjamin Matuszewski",
+    "Joseph Larralde"
+  ],
+  "description": "soundworks application for Huihui Cheng's piece \"Your Humanity Degree\"",
+  "license": "BSD-3-Clause",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npm run clean && soundworks-template-build -b",
+    "build:production": "npm run clean && soundworks-template-build -b -m",
+    "clean": "soundworks-template-build -c",
+    "watch-process": "soundworks-template-build -p",
+    "watch-process:inspect": "soundworks-template-build -i -p",
+    "dev": "npm run build && (npm run watch-process:inspect server & soundworks-template-build -b -w)",
+    "postinstall": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public",
+    "start": "node .build/server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/josephlarralde/your-humanity-degree"
+  },
+  "dependencies": {
+    "@ircam/basic-controllers": "^1.0.4",
+    "@soundworks/core": "^3.0.0",
+    "@soundworks/plugin-audio-buffer-loader": "^1.0.0",
+    "@soundworks/plugin-platform": "^1.0.1",
+    "soundworks-template-helpers": "github:josephlarralde/soundworks-template-helpers",
+    "soundworks-plugin-auth": "github:josephlarralde/soundworks-plugin-auth",
+    "@webcomponents/webcomponentsjs": "^2.4.3",
+    "core-js": "^3.6.5",
+    "json5": "^2.1.0",
+    "lit-element": "^2.2.1",
+    "lit-html": "^1.1.2",
+    "regenerator-runtime": "^0.13.7",
+    "serve-static": "^1.14.1",
+    "template-literal": "^1.0.3",
+    "vue": "^2.6.12",
+    "vuex": "^3.5.1",
+    "waves-audio": "^0.5.2"
+  },
+  "devDependencies": {
+    "soundworks-template-build-vue": "github:collective-soundworks/soundworks-template-build-vue"
+  }
+}

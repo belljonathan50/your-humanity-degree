@@ -1,0 +1,327 @@
+* {
+  user-select: none;
+}
+
+/* this prevents pull to refresh on chrome : */
+/* https://stackoverflow.com/questions/40011909/mobile-how-to-prevent-pull-to-refresh */
+html {
+  touch-action: pan-down;
+}
+
+html, body {
+  overflow: hidden;
+}
+
+div#main-container {
+  width: 100%;
+  height: 100%;
+}
+
+div.flex-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+div.flex-grow-shrink {
+  flex: 1 1 auto;
+}
+
+div.flex-shrink-nogrow {
+  flex: 0 1 auto;
+}
+
+div.flex-grow-noshrink {
+  flex: 1 0 auto;
+}
+
+div.title {
+  font-size: 3em;
+  text-align: center;
+}
+
+div.subtitle {
+  font-size: 2em;
+  text-align: center;
+}
+
+div.flex {
+  flex: 0 1 auto;
+}
+
+div.cropped {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+div.scrolly {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+/* * * * * * * * * * SURVEY * * * * * * * * */
+
+.survey-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.survey {
+  width: 100%;
+  position: absolute;
+  top: 100%;
+}
+
+.survey .item {
+  padding: 1em;
+  padding-top: 0;
+  font-size: 1.2em;
+}
+
+.survey .item .question {
+  padding: 0.5em 0;
+}
+
+.survey .item .answers {}
+
+.survey .item .answers .answer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.25em 0;
+}
+
+.survey .item .answers .answer label {
+  font-size: 1.2em;
+  padding: 0.4em;
+  /*margin-left: 0.5em;*/
+}
+
+input[type="radio"] {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  width: 2em;
+  height: 2em;
+}
+
+div.input-radio-substitute {
+  position: absolute;
+  width: 2em;
+  height: 2em;
+  background-color: transparent;
+  border-radius: 50%;
+  border: 1px solid #fff;
+}
+
+div.input-radio-substitute:after {
+  content: '';
+  /*display: none;*/
+  top: 50%;
+  right: 50%;
+  bottom: 50%;
+  left: 50%;
+  position: absolute;
+  border-radius: 50%;
+  background-color: white;
+  transition: 0.1s all linear;
+}
+
+input[type="radio"]:checked + div.input-radio-substitute:after {
+  /*display: block;*/
+  top: 0.5em;
+  right: 0.5em;
+  bottom: 0.5em;
+  left: 0.5em;  
+}
+
+/* * * * * * * * FLYING WORDS * * * * * * * */
+
+div.flying-words {
+  position: absolute;
+  top:0; right:0; bottom:0; left:0;
+  overflow: hidden;  
+}
+
+div.flying-word {
+  position: absolute;
+  padding: 0.5em;
+  top: 100%;
+  text-align: center;
+  font-size: 1.2em;  
+
+  pointer-events: auto;  
+  opacity: 1;
+  visibility: visible;
+}
+
+div.flying-word.selected {
+  pointer-events: none;
+  opacity: 0;
+  /*visibility: hidden;*/
+  /*font-size: 12em;*/
+
+  transition: opacity 1s; /* visibility 1s; */ /*font-size 1s;*/
+}
+
+/* * * * * * * * * * PADS * * * * * * * * * */
+
+div.pads-wrapper {
+  position: relative;
+}
+
+div.pads-wrapper.beethoven {
+  background: url('/images/beethoven.jpg');
+  background-size: 100%;
+}
+
+div.pads svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+  pointer-events: none;
+}
+
+div.pads svg path {
+  fill: black;
+}
+
+div.pads svg rect {
+  /* this lets clicks go through and allows underlying text to be clicked */
+  pointer-events: none;
+  stroke-width: 0.2;
+  stroke: black; /* this should always be the background color */
+  fill: transparent;
+  transition: fill 0.2s;
+}
+
+div.pads svg rect.enabled-stroke:not(.disabled) {
+  stroke: white;
+}
+
+div.pads svg rect.enabled-fill:not(.disabled) {
+  fill: black;
+}
+
+div.pads svg rect.active {
+  fill: white !important;
+  transition: fill 0.01s;
+}
+
+div.pads svg rect.disabled {
+  /* this catches clicks and prevents underlying text to be clicked */
+  pointer-events: auto;
+}
+
+div.pads svg rect.disabled.disabled-stroke {
+  stroke: white;
+}
+
+div.pads svg rect.disabled.disabled-fill {
+  fill: black;
+}
+
+div.pads svg text {
+  fill: white;
+  /*font-size: 1em;*/
+}
+
+/* this wrapper is needed for f*****g safari */
+div.pad-words-wrapper {
+  display: grid;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* inspired from : https://codepen.io/Hlsg/pen/EXKJba */
+div.pad-words {
+  display: grid;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 2vw;
+  grid-auto-rows: 1fr;
+  grid-column-gap: 2vw;
+  grid-row-gap: 2vw;
+}
+
+div.pad-words > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/*div.pad-words > div > div {}*/
+
+/* * * * * * * * * * SLIDERS * * * * * * * * * */
+
+div.multislider-wrapper {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+}
+
+div.multislider {
+  width: 100%;
+  height: 100%;
+}
+
+/*div.multislider div.slider {*/
+div.multislider svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+  /*flex: 1 1 auto;*/
+}
+
+/*div.multislider div.slider svg rect.bg {*/
+div.multislider svg rect.bg {
+  fill: #333;
+  stroke: black;
+  stroke-width: 0;
+  z-index: 1;
+}
+
+div.multislider svg rect.fg {
+/*div.multislider div.slider svg rect.fg {*/
+  fill: #eee;
+  stroke: black;
+  stroke-width: 0;
+  z-index: 2;
+}
+
+div.multislider svg rect.handle {
+  fill: #fff;
+  z-index: 3;
+}
+
+/* * * * * * * * TRANSITIONS * * * * * * * */
+
+.fade-enter-active {
+  /*transition: opacity .2s;*/
+  transition: opacity .2s .2s;
+}
+
+.fade-leave-active {
+  transition: opacity .2s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
