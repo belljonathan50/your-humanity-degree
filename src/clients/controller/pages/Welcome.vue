@@ -1,6 +1,5 @@
 <template>
   <div>
-    Yo ! Wazap ?
   </div>
 </template>
 
