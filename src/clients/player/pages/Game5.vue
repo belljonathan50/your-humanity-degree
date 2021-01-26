@@ -31,7 +31,7 @@ export default {
       playerState: this.$experience.playerState,
       words: [],
       padSampleSet: 0,
-      // disabledPads: [],
+      disabledPads: [],
       wordSampleSet: 0,
     };
   },
