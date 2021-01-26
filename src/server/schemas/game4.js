@@ -21,9 +21,9 @@ export default {
   },
   surveySpeed: {
     type: 'float',
-    min: 0.01,
-    max: 2,
-    default: 1,
+    min: 20,
+    max: 60,
+    default: 20,
   },
   backgroundSampleSet: {
     type: 'enum',
