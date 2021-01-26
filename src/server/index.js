@@ -43,7 +43,8 @@ console.log(`
 // -------------------------------------------------------------------
 // server.pluginManager.register(pluginName, pluginFactory, [pluginOptions], [dependencies])
 server.pluginManager.register('auth', pluginAuthFactory, {
-  password: config.env.password,
+  // defined e.g. from heroku or balena-cloud dashboard
+  password: process.env.AUTH_PLUGIN_PASSWORD || config.env.password,
 }, []);
 
 server.pluginManager.register('audio-buffer-loader', pluginAudioBufferLoaderFactory, {}, []);
