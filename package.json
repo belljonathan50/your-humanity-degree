@@ -16,7 +16,8 @@
     "watch-process:inspect": "soundworks-template-build -i -p",
     "dev": "npm run build && (npm run watch-process:inspect server & soundworks-template-build -b -w)",
     "postinstall": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public",
-    "start": "node .build/server/index.js"
+    "start": "node .build/server/index.js",
+    "heroku-postbuild": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -43,5 +44,8 @@
   },
   "devDependencies": {
     "soundworks-template-build-vue": "github:collective-soundworks/soundworks-template-build-vue"
+  },
+  "engines" : {
+    "node": "14.15.4"
   }
 }
