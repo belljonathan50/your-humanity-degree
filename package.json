@@ -9,6 +9,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "setup-post-checkout-hook": "cp bin/post-checkout .git/hooks",
     "build": "npm run clean && soundworks-template-build -b",
     "build:production": "npm run clean && soundworks-template-build -b -m",
     "clean": "soundworks-template-build -c",

@@ -1,9 +1,9 @@
 # transpiled files and dependencies
 /node_modules
 /public/vendors
-# ignore all config except default
-/config/env/**
-!/config/env/default.json
+
+# ignore all config except heroku
+/config/env/*
 !/config/env/heroku.json
 
 # ignore local working documents
