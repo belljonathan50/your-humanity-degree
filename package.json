@@ -40,11 +40,10 @@
     "template-literal": "^1.0.3",
     "vue": "^2.6.12",
     "vuex": "^3.5.1",
-    "waves-audio": "^0.5.2"
-  },
-  "devDependencies": {
+    "waves-audio": "^0.5.2",
     "soundworks-template-build-vue": "github:collective-soundworks/soundworks-template-build-vue"
   },
+  "devDependencies": {},
   "engines" : {
     "node": "14.15.4"
   }
