@@ -13,6 +13,7 @@
 # ignore per-branch post-checkout .gitignore generator system kept here for local reference
 # it worked but this postinstall command hed to be run : "cp bin/post-checkout .git/hooks"
 # (ended up using environment variables on heroku instead of config/env/whatever.json)
+# system inspired from https://gist.github.com/wizioo/c89847c7894ede628071
 /.gitignores
 /bin
 
