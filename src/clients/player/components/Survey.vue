@@ -1,35 +1,33 @@
 <template>
-  <div class="survey-wrapper" ref="surveyWrapper">
   <div class="survey" ref="survey">
-    <div class="item" v-for="(item, i) in data">
-      <div class="question"> {{ item.question }} </div>
-      <div class="answers">
-        <div class="answer" v-for="(answer, j) in item.answers"
-          :set="uid = `${i}-${j}`">
-          <input type="radio" 
-            :ref="uid" :id="uid" :name="item.question" :value="answer[1]"
-            @change="onRadioItemChanged(i, j, answer[1])">
-          <div class="input-radio-substitute"></div>
-          <label :for="uid"> {{ answer[0] }} </label>
+    <div v-for="(item, i) in data">
+      <transition name="slide">
+        <div class="item-wrapper" v-if="show === i">
+          <div class="item">
+            <div class="question"> {{ item.question }} </div>
+            <div class="answers">
+              <div class="answer" v-for="(answer, j) in item.answers"
+                :set="uid = `${i}-${j}`">
+                <input type="radio" 
+                  :ref="uid" :id="uid" :name="item.question" :value="answer[1]"
+                  @change="onAnswerClicked(i, j)">
+                <div class="input-radio-substitute"></div>
+                <label :for="uid"> {{ answer[0] }} </label>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </transition>
     </div>
-  </div>
   </div>
 </template>
 
-<script>  
+<script>
 export default {
   props: ['data'],
   data() {
     return {
-      rafId: null,
-      totalScore: 0,
-      viewHeight: 0,
-      contentHeight: 0,
-      yoffset: 0,
-      lastUpdate: 0,
-      speed: 30, // px/sec
+      show: 0,
     };
   },
   computed: {
@@ -46,59 +44,52 @@ export default {
     },
   },
   async mounted() {
-    this.lastUpdate = Date.now();
-    this.rafId = window.requestAnimationFrame(this.updateAnimationFrame);
-
-    // see nnjeim's answer in
-    // https://forum.vuejs.org/t/how-to-watch-the-height-change-dom-of-an-element-in-vuejs/21290/3
-    await this.$nextTick(); // wait for the item list to render (?)
-    this.viewHeight = this.$refs.surveyWrapper.clientHeight;
-    this.contentHeight = this.$refs.survey.clientHeight;
-    this.yoffset = this.viewHeight;
-  },
-  // this hook has been replaced by "beforeUnmount" in vuejs 3 :
-  beforeDestroy() {
-    window.cancelAnimationFrame(this.rafId);
-    this.rafId = null;
+    // do something ?
   },
   methods: {
-    // for some reason this method has to be async to not throw an error when
-    // invoked from parent with "this.$refs.survey.setSpeed(x)"
-    // (still working despite of throwing an error, though)
+    onAnswerClicked(i, j) {
+      const item = this.data[i];
 
-    // in pixels per second
-    // todo : change to screens per second ?
-    async setSpeed(newSpeed) {
-      this.speed = newSpeed;
-    },
-    updateAnimationFrame() {
-      const now = Date.now();
-      const delta = now - this.lastUpdate;
-      this.lastUpdate = now;
+      let min = +Infinity;
+      let max = -Infinity;
 
-      this.$refs.survey.style.top = `${this.yoffset}px`;
-      this.yoffset -= this.speed * delta * 0.001;
-
-      if (this.yoffset < -this.contentHeight) return;
-
-      this.rafId = window.requestAnimationFrame(this.updateAnimationFrame);
-    },
-    onRadioItemChanged(i, j, newScore) {
-      const previousScore = this.totalScore;
-
-      this.totalScore = this.items.reduce((acc, item) => {
-        return item.checked ? acc + Number(item.value) : acc;
-      }, 0);
-
-      const deltaScore = this.totalScore - previousScore;
-
-      this.$emit('change', {
-        q: i,
-        a: j,
-        newScore,
-        deltaScore,
-        totalScore: this.totalScore
+      item.answers.forEach(a => {
+        const score = a[1];
+        min = score < min ? score : min;
+        max = score > max ? score : max;
       });
+
+      const score = item.answers[j][1];
+      this.$emit('click', { score, min, max });
+
+      const transDur = document.body.style.getPropertyValue('--survey-transition-duration');
+
+      if (score === min) {
+        this.$refs.survey.style.setProperty('--transition-duration', 0);
+        this.$refs.survey.style.setProperty('--fg-color', 'white');
+        this.$refs.survey.style.setProperty('--bg-color', 'black');
+
+        document.body.classList.add('blink');
+        setTimeout(() => {
+          document.body.classList.remove('blink');
+        }, 500);
+      } else if (score === max) {
+        const hue = Math.random() * 360;
+        const fontColor = (hue >= 30 && hue <= 190) ? 'black' : 'white';
+
+        const transDur = document.body.style.getPropertyValue('--survey-transition-duration');
+        this.$refs.survey.style.setProperty('--transition-duration', transDur);
+        this.$refs.survey.style.setProperty('--fg-color', fontColor);
+        this.$refs.survey.style.setProperty('--bg-color', `hsl(${hue}, 100%, 50%)`);        
+      } else {
+        this.$refs.survey.style.setProperty('--transition-duration', transDur);
+        this.$refs.survey.style.setProperty('--fg-color', 'white');
+        this.$refs.survey.style.setProperty('--bg-color', 'black');
+      }
+
+      setTimeout(() => {
+        this.show++;
+      }, 500);
     },
   },
 };

@@ -36,9 +36,9 @@ export default {
     };
   },
   computed: {
-    // padSamples() {
-    //   return samples.game2.pads[this.padSampleSet];
-    // },
+    padSamples() {
+      return samples.game2.pads[this.padSampleSet];
+    },
     wordSamples() {
       return samples.game5.words[this.wordSampleSet];
     },

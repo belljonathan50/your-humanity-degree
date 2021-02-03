@@ -8,6 +8,12 @@ export default {
     type: 'boolean',
     default: false,
   },
+  connectedClients: {
+    type: 'integer',
+    min: 0,
+    max: 1e9,
+    default: 0,
+  },
   currentPage: {
     type: 'enum',
     default: 'welcome',
@@ -15,8 +21,8 @@ export default {
       'welcome',
       'game1',
       'game2',
-      'game3',
-      'game4',
+      // 'game3',
+      // 'game4',
       'game5',
       'thankyou',      
     ],

@@ -19,7 +19,10 @@ export default {
     type: 'any',
     default: flyingWords,
   },
-  // add flying words parameters here
+  showSliders: {
+    type: 'boolean',
+    default: false,
+  },
   padSampleSet: {
     type: 'enum',
     default: 0,

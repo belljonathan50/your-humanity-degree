@@ -8,16 +8,23 @@ class PlayerExperience extends AbstractExperience {
     this.audioBufferLoader = this.require('audio-buffer-loader');
   }
 
-  start() {
+  async start() {
     super.start();
+    this.globalState = await this.server.stateManager.attach('globals');
   }
 
-  enter(client) {
+  async enter(client) {
     super.enter(client);
+    let { connectedClients } = this.globalState.getValues();
+    connectedClients++;
+    await this.globalState.set({ connectedClients });
   }
 
-  exit(client) {
+  async exit(client) {
     super.exit(client);
+    let { connectedClients } = this.globalState.getValues();
+    connectedClients--;
+    await this.globalState.set({ connectedClients });
   }
 }
 

@@ -1,39 +1,64 @@
 <template>
   <div>
-    <div class="title"> Game 2 </div>
-    <div class="subtitle">
-      Click the words
-      <br>
-      that suit you
+    <div class="flex-grow-shrink" style="flex-basis: 50%;">
+      <div class="title"> Game 2 </div>
+      <div class="subtitle">
+        Click the words
+        <br>
+        that suit you
+      </div>
     </div>
-    <div class="pads-wrapper">
-      <flying-words
-        :words="words"
-        :wordSamples="wordSamples"
-        @click="onClickWord"
-      />
-      <pad-surface
-        :columns="5"
-        :rows="5"
-        :disabledPads="playerState.getValues().disabledPads"
-        :padSamples="padSamples"
-        :enabledStroke="true"
-        :disabledStroke="false"
-        :enabledFill="false"
-        :disabledFill="true"
-      />
+
+    <div class="flex-grow-noshrink">
+      <div class="pads-wrapper">
+        <div class="multislider-wrapper">
+          <multi-slider
+            v-bind:class="showSliders ? '' : 'hidden'"
+            :sliders="3"
+            :disabledSliders="[1]"
+            :disableTouchEvents="!showSliders"
+            @change="onSliderValueChanged"
+          />
+        </div>
+        <flying-words
+          :words="words"
+          :wordSamples="wordSamples"
+          :disableTouchEvents="showSliders"
+          @click="onClickWord"
+        />
+        <pad-surface
+          :columns="5"
+          :rows="5"
+          :disableTouchEvents="showSliders"
+          :disabledPads="playerState.getValues().disabledPads"
+          :padSamples="padSamples"
+          :enabledStroke="true"
+          :disabledStroke="false"
+          :enabledFill="false"
+          :disabledFill="true"
+          @click="onClickPad"
+        />
+      </div>
     </div>
+
+    <div class="flex-grow-shrink" style="flex-basis: 50%;"></div>
   </div>
 </template>
 
 <script>
 import { samples } from '../../../server/data/samples';
 import words from '../../../server/data/flying-words';
+import GranularChain from '../utils/GranularChain';
 import FlyingWords from '../components/FlyingWords.vue';
 import PadSurface from '../components/PadSurface.vue';
+import MultiSlider from '../components/MultiSlider.vue';
+
+// see --multislider-fade-duration var in your-humanity-degree.css
+// argument should be the same value in ms
+const granularChain = new GranularChain(null, 5000);
 
 export default {
-  components: { FlyingWords, PadSurface },
+  components: { FlyingWords, PadSurface, MultiSlider },
   data() {
     return {
       words,
@@ -41,6 +66,8 @@ export default {
       playerState: this.$experience.playerState,
       padSampleSet: 0,
       wordSampleSet: 0,
+      showSliders: false,
+      // granularChain: null,
     }
   },
   computed: {
@@ -50,6 +77,11 @@ export default {
     wordSamples() {
       return samples.game2.words[this.wordSampleSet];
     },
+    sliderBuffer() {
+      const arr = samples.game3.sliders[0];
+      const sample = arr[Math.round(Math.random() * (arr.length - 1))];
+      return this.$experience.audioBufferLoader.data[sample];
+    }
   },
   async created() {
     const { totalScore, minScore, maxScore } = this.playerState.getValues();
@@ -75,6 +107,11 @@ export default {
       disabledPads.push(enabledPads.splice(index, 1)[0]);
     }
 
+    granularChain.buffer = this.sliderBuffer;
+    granularChain.setGranular(0);
+    granularChain.setFilter(0);
+    granularChain.setDistortion(0);
+
     await this.playerState.set({
       disabledPads,
       unselectedFlyingWords: words,
@@ -82,6 +119,15 @@ export default {
   },
   async mounted() {    
     this.gameState.subscribe(updates => {
+      if (updates.hasOwnProperty('showSliders')) {
+        this.showSliders = updates.showSliders;
+        if (this.showSliders) {
+          granularChain.start();
+        } else {
+          granularChain.stop();
+        }
+      }
+
       if (updates.hasOwnProperty('padSampleSet')) {
         this.padSampleSet = updates.padSampleSet;
       }
@@ -91,7 +137,19 @@ export default {
       }      
     });
 
-    const { padSampleSet, wordSampleSet } = this.gameState.getValues();
+    const {
+      showSliders,
+      padSampleSet,
+      wordSampleSet
+    } = this.gameState.getValues();
+
+    this.showSliders = showSliders;
+    if (this.showSliders) {
+      granularChain.start();
+    // } else {
+    //   granularChain.stop();
+    }
+
     this.padSampleSet = padSampleSet;
     this.wordSampleSet = wordSampleSet;
 
@@ -103,6 +161,11 @@ export default {
     });
 
     await this.playerState.set({ minScore, maxScore });
+  },
+  beforeDestroy() {
+    // this.granularChain.deinit();
+    // this.granularChain = null;
+    granularChain.stop();
   },
   methods: {
     async onClickWord(word) {
@@ -121,7 +184,25 @@ export default {
         unselectedFlyingWords,
         totalScore: totalScore + word.score,
       });
-    }
+    },
+    onClickPad(i) {
+      // todo ?
+    },
+    onSliderValueChanged(i, val) {
+      switch (i) {
+        case 0:
+          granularChain.setGranular(val);
+          break;
+        case 1:
+          granularChain.setFilter(val);
+          break;
+        case 2:
+          granularChain.setDistortion(val);
+          break;
+        default:
+          break;
+      }
+    },
   }
 };
 </script>

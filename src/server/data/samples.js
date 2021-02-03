@@ -1,7 +1,22 @@
 const samples = {
-  // first survey :
-  // looping background sounds are processed by effects and triggers are trigged
-  // anytime an item is clicked
+  surveys: {
+    good: [
+      'quick/quick26',
+      'others/new scene2',
+      'others/new scene5',
+    ],
+    neutral: [
+      'others/trumpet',
+      'others/trumpet2',
+      'others/trumpet3',
+    ],
+    bad: [
+      'words/words2',
+      'words/words3',
+      'words/words22',
+      'words/words23',
+    ],
+  },
   game1: {
     background: [
       [
@@ -26,6 +41,43 @@ const samples = {
         'quick/quick12',
       ],
     ],
+    answers: [{
+      // answers sample set 1
+      good: [
+        'quick/quick26',
+        'others/new scene2',
+        'others/new scene5',
+      ],
+      neutral: [
+        'others/trumpet',
+        'others/trumpet2',
+        'others/trumpet3',
+      ],
+      bad: [
+        'words/words2',
+        'words/words3',
+        'words/words22',
+        'words/words23',
+      ],
+    }, {
+      // answers sample set 2
+      good: [
+        'quick/quick26',
+        'others/new scene2',
+        'others/new scene5',
+      ],
+      neutral: [
+        'others/trumpet',
+        'others/trumpet2',
+        'others/trumpet3',
+      ],
+      bad: [
+        'words/words2',
+        'words/words3',
+        'words/words22',
+        'words/words23',
+      ],
+    }],
   },
   // pads without background image and with flying words
   game2: {
@@ -108,16 +160,32 @@ const samples = {
 
 const files = {};
 
-Object.keys(samples).forEach(game => {
-  const gameSamples = samples[game];
-  Object.keys(gameSamples).forEach(category => {
-    gameSamples[category].forEach(sampleSet => {
-      sampleSet.forEach(sample => {
-        files[sample] = `sounds/${sample}.mp3`;
+(function browseObject(obj) {
+  if (typeof obj === 'object') {
+    if (Array.isArray(obj)) {
+      obj.forEach(item => {
+        browseObject(item);
       });
-    });
-  });
-});
+    } else if (obj !== null) {
+      Object.keys(obj).forEach(key => {
+        browseObject(obj[key]);
+      });
+    }
+  } else if (typeof obj === 'string') {
+    files[obj] = `sounds/${obj}.mp3`;
+  }
+})(samples);
+
+// Object.keys(samples).forEach(game => {
+//   const gameSamples = samples[game];
+//   Object.keys(gameSamples).forEach(category => {
+//     gameSamples[category].forEach(sampleSet => {
+//       sampleSet.forEach(sample => {
+//         files[sample] = `sounds/${sample}.mp3`;
+//       });
+//     });
+//   });
+// });
 
 export {
   samples,

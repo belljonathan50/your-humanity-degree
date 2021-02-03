@@ -13,8 +13,17 @@ export default {
 
     const controls = {};
 
+    controls.showSliders = new controllers.Toggle({
+      label: 'show sliders',
+      default: schema.showSliders.default,
+      container: '#controller-game2',
+      callback: value => {
+        state.set({ showSliders: value });
+      },
+    });
+
     controls.padSampleSet = new controllers.SelectButtons({
-      label: 'Pads sample set',
+      label: 'Pad samples',
       options: schema.padSampleSet.list,
       default: schema.padSampleSet.default,
       container: '#controller-game2',
@@ -23,8 +32,9 @@ export default {
       },
     });
 
+    /*
     controls.wordSampleSet = new controllers.SelectButtons({
-      label: 'Words sample set',
+      label: 'Word samples',
       options: schema.wordSampleSet.list,
       default: schema.wordSampleSet.default,
       container: '#controller-game2',
@@ -32,6 +42,7 @@ export default {
         state.set({ wordSampleSet: value });
       },
     });
+    */
 
     state.subscribe(updates => {
       Object.keys(updates).forEach(param => {

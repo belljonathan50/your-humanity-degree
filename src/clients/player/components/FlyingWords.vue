@@ -3,9 +3,10 @@
     <!-- <canvas ref="canvas"/> -->
     <div class="flying-word"
       v-for="word in words"
-      @click="onClickWord(word)"
       :ref="word.text">
-      {{ word.text }}
+      <div @click="onClickWord(word)">
+        {{ word.text }}
+      </div>
     </div>
   </div>
 </template>
@@ -14,7 +15,7 @@
 import FlyingWords from '../utils/FlyingWords';
 
 export default {
-  props: [ 'words', 'wordSamples' ],
+  props: [ 'words', 'wordSamples', 'disableTouchEvents' ],
   data() {
     return {
       rafId: null,
@@ -61,9 +62,16 @@ export default {
       this.rafId = window.requestAnimationFrame(this.updateAnimationFrame);
     },
     onClickWord(word) {
+      if (this.disableTouchEvents) return;
+      
       console.log(`clicked ${word.text} with score ${word.score}`);
       this.flyingWords.disableWord(word, this.wordElements);
       this.$emit('click', word);
+
+      document.body.classList.add('blink');
+      setTimeout(() => {
+        document.body.classList.remove('blink');
+      }, 500);
     },
   },
 };

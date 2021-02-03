@@ -1,35 +1,55 @@
 <template>
   <div id="main-container">
-    <transition name="fade">
-      <component :is="currentPage" />
-      </component>
-    </transition>
+    <div class="page-wrapper">
+      <transition name="fade">
+        <component :is="currentPage" />
+        </component>
+      </transition>
+    </div>
+    <toast
+      :class="showToast ? '' : 'hidden'"
+      :content="toastContent"
+    />
   </div>
 </template>
 
 <script>
 import './pages';
 import flyingWords from '../../server/data/flying-words';
+import Toast from './components/Toast.vue';
 
 export default {
+  components: { Toast },
   data() {
     return {
       currentPage: null,
+      showToast: false,
+      toastContent: 'yaboodabidoo',
       globalState: this.$experience.states.globals,
       playerState: this.$experience.playerState,
     };
   },
   async mounted() {
     this.globalState.subscribe(async updates => {
-      if (updates.currentPage) {
+      if (updates.hasOwnProperty('currentPage')) {
         this.currentPage = updates.currentPage;
+      }
+
+      if (updates.hasOwnProperty('toastContent')) {
+        this.toastContent = updates.toastContent;
+      }
+
+      if (updates.hasOwnProperty('connectedClients')) {
+        console.log(`connected clients : ${updates.connectedClients}`);
       }
     });
 
     await this.playerState.set({ unselectedFlyingWords: flyingWords });
 
-    const { currentPage } = this.globalState.getValues();    
+    const { currentPage, toastContent, connectedClients } = this.globalState.getValues();    
     this.currentPage = currentPage;
+    console.log(`connected clients : ${connectedClients}`);
+    // this.toastContent = toastContent;
 
     document.body.addEventListener('touchmove', this.preventTouchEvents, {
       passive: false

@@ -24,15 +24,32 @@
       :style="`
         grid-template-columns: repeat(${columns}, 1fr);
       `">
+      <!--
+      right formatting found here :
+      https://stackoverflow.com/questions/48381670/vuejs-transform-rotate-style-inline
+      -->
       <div
         v-for="(pad, i) in layoutVars.pads"
-        :style="`
-          font-size: ${1.5 * pad.size / pad.word.text.length}vw;
-          grid-column: ${Math.floor(i % columns) + 1};
-          grid-row: ${Math.floor(i / columns) + 1};
-        `"
+        :style="{
+          'font-size': `${1.5 * pad.size / pad.word.text.length}vw`,
+          'grid-column': `${Math.floor(i % columns) + 1}`,
+          'grid-row': `${Math.floor(i / columns) + 1}`,
+          transform: `translate(
+            ${(pad.offsetX + (layoutVars.padSize - pad.size) * 0.5) * (100 / layoutVars.padSize)}%,
+            ${(pad.offsetY + (layoutVars.padSize - pad.size) * 0.5) * (100 / layoutVars.padSize)}%
+          )`,
+        }"
       >
-        <div> {{ disabledPads.indexOf(i) === -1 ? pad.word.text : '' }} </div>
+        <div
+          :style="{
+            width: `${100 * pad.size / layoutVars.padSize}%`,
+            height: `${100 * pad.size / layoutVars.padSize}%`,
+          }"
+        >
+        <div>
+          {{ disabledPads.indexOf(i) === -1 ? pad.word.text : '' }}
+        </div>
+        </div>
       </div>
     </div>
     </div>
@@ -40,8 +57,7 @@
 </template>
 
 <script>
-// TODO : resize words from script at startup
-
+import PadAnimator from '../utils/PadAnimator';
 import SimpleSampler from '../utils/SimpleSampler';
 
 export default {
@@ -57,6 +73,14 @@ export default {
     'disabledFill',
     'words',
   ],
+  data() {
+    return {
+      rafId: null,
+      audioPlayers: [],
+      padTransforms: [],
+      padAnimators: [],
+    };
+  },
   computed: {
     layoutVars() {
       const spacer = 2;
@@ -71,10 +95,17 @@ export default {
       // then we add holes in the surface      
       for (let r = 0; r < this.rows; r++) {
         for (let k = 0; k < this.columns; k++) {
-          const x = (k + 1) * spacer + k * padSize;
-          const y = (r + 1) * spacer + r * padSize;
-          path += ` M${x} ${y} v${padSize} h${padSize} v-${padSize}z`; // anticlockwise
-          pads.push({ x, y, size: padSize }); // and we also return vars to create the svg rectangles
+          let { scale, offsetX, offsetY } = this.padTransforms[r * this.columns + k];
+          const actualPadSize = padSize * scale;          
+          const scaleOffset = (padSize - actualPadSize) * 0.5; // padSize - padSize * scale
+          // compute actual offsets from [-1, 1] values so that they never go out of the max pad size
+          offsetX *= scaleOffset;
+          offsetY *= scaleOffset;
+
+          const x = (k + 1) * spacer + k * padSize + offsetX + scaleOffset;
+          const y = (r + 1) * spacer + r * padSize + offsetY + scaleOffset;
+          path += ` M${x} ${y} v${actualPadSize} h${actualPadSize} v-${actualPadSize}z`; // anticlockwise
+          pads.push({ x, y, offsetX, offsetY, size: actualPadSize }); // and we also return vars to create the svg rectangles
         }
       }
 
@@ -84,7 +115,7 @@ export default {
         });
       }
 
-      return { width, height, path, pads };
+      return { width, height, padSize, path, pads };
     },
     padElements() {
       const res = [];
@@ -96,23 +127,37 @@ export default {
     },
   },
   created() {
-    this.audioPlayers = [];
     const nPads = this.columns * this.rows;
     for (let i = 0; i < nPads; i++) {
       this.audioPlayers.push(new SimpleSampler(this.$experience.audio.audioContext));
+      this.padTransforms.push({
+        scale: 1,
+        offsetX: 0,
+        offsetY: 0,
+        // scale: Math.random() * 0.5 + 0.5,
+        // offsetX: (Math.random() - 0.5) * 2,
+        // offsetY: (Math.random() - 0.5) * 2,
+      });
+      this.padAnimators.push(new PadAnimator());
     }
   },
   mounted() {
     document.body.addEventListener('touchstart', this.onTouchStart);
     document.body.addEventListener('touchmove', this.onTouchMove);
     document.body.addEventListener('touchend', this.onTouchEnd);
+
+    this.rafId = window.requestAnimationFrame(this.updateAnimationFrame);
   },
   // looks like this hook doesn't exist in vue 3 anymore
   // todo : find replacement
+  // update : there is a beforeUnmount instead
   beforeDestroy() {
     document.body.removeEventListener('touchstart', this.onTouchStart);
     document.body.removeEventListener('touchmove', this.onTouchMove);
     document.body.removeEventListener('touchend', this.onTouchEnd);
+
+    window.cancelAnimationFrame(this.rafId);
+    this.rafId = null;
   },
   methods: {
     play(padIndex) {
@@ -129,17 +174,29 @@ export default {
       var rect = pad.getBoundingClientRect();
       return x > rect.left && x < rect.right && y > rect.top && y < rect.bottom;      
     },
+    updateAnimationFrame() {
+      // do the stuff
+      let moved = false;
+      this.padAnimators.forEach((animator, i) => {
+        if (animator.update(this.padTransforms[i])) { moved = true; }
+      });
+
+      if (moved) { this.padTransforms = [...this.padTransforms]; }
+      this.rafId = window.requestAnimationFrame(this.updateAnimationFrame);
+    },
     onTouchStart(e) {
+      e.preventDefault();
       if (this.disableTouchEvents) return;
 
       const x = e.touches[0].clientX;
       const y = e.touches[0].clientY;
 
-      for (var i = 0; i < this.padElements.length; i++) {
+      for (let i = 0; i < this.padElements.length; i++) {
         const p = this.padElements[i];
         if (this.isInside(x, y, p) && !p.padIsDisabled) {
           p.padIsActive = true;
           p.classList.add('active');
+          this.padAnimators[i].start(this.padTransforms[i]);
           this.$emit('click', i);
           this.play(i);
         }
@@ -152,12 +209,13 @@ export default {
       const x = e.touches[0].clientX;
       const y = e.touches[0].clientY;
 
-      for (var i = 0; i < this.padElements.length; i++) {
+      for (let i = 0; i < this.padElements.length; i++) {
         const p = this.padElements[i];
         if (this.isInside(x, y, p)) {
           if (!p.padIsActive && !p.padIsDisabled) {
             p.padIsActive = true;
             p.classList.add('active');
+            this.padAnimators[i].start(this.padTransforms[i]);
             this.play(i);
           }
         } else if (p.padIsActive) {

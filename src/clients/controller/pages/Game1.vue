@@ -13,6 +13,7 @@ export default {
 
     const controls = {};
 
+    /*
     controls.surveySpeed = new controllers.Slider({
       label: 'Survey speed',
       min: 20,
@@ -34,14 +35,15 @@ export default {
         state.set({ backgroundSampleSet: value });
       },
     });
+    //*/
 
-    controls.triggerSampleSet = new controllers.SelectButtons({
-      label: 'Trigger sample set',
-      options: schema.triggerSampleSet.list,
-      default: schema.triggerSampleSet.default,
+    controls.answerSampleSet = new controllers.SelectButtons({
+      label: 'Answer samples',
+      options: schema.answerSampleSet.list,
+      default: schema.answerSampleSet.default,
       container: '#controller-game1',
       callback: value => {
-        state.set({ triggerSampleSet: value });
+        state.set({ answerSampleSet: value });
       },
     });
 

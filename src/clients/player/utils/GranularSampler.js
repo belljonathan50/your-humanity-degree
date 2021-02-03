@@ -5,6 +5,7 @@ class GranularSampler {
     this.engine = new audio.GranularEngine(options);
     this.duration = this.engine.buffer ? this.engine.buffer.duration : 0;
     this.normalizedPosition = 0;
+    this.playing = false;
   }
 
   connect(node) {
@@ -39,11 +40,17 @@ class GranularSampler {
   }
 
   play() {
-    audio.getScheduler().add(this.engine);
+    if (!this.playing) {
+      audio.getScheduler().add(this.engine);
+      this.playing = true;
+    }
   }
 
   stop() {
-    audio.getScheduler().remove(this.engine);
+    if (this.playing) {
+      audio.getScheduler().remove(this.engine);
+      this.playing = false;
+    }
   }
 };
 

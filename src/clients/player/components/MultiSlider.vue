@@ -3,6 +3,7 @@
     <svg :width="sliders * 30" height="100" :viewBox="`0 0 ${sliders * 30} 100`">
       <template v-for="(s, i) in layoutVars">
         <rect class="bg"
+          v-bind:class="disabled.indexOf(i) !== -1 ? 'disabled' : ''"
           :ref="`bg-${i}`"
           :x="s.x"
           :y="s.y"
@@ -10,6 +11,7 @@
           :height="s.height"
         />
         <rect class="fg"
+          v-bind:class="disabled.indexOf(i) !== -1 ? 'disabled' : ''"
           :ref="`fg-${i}`"
           :x="s.x"
           :y="(s.height + s.y) - (sliderValues[i] * s.height)"
@@ -23,11 +25,12 @@
 
 <script>
 export default {
-  props: [ 'sliders' ],
+  props: [ 'sliders', 'disabledSliders', 'disableTouchEvents' ],
   data() {
     return {
-      handleHeight: 5,
+      // handleHeight: 5,
       sliderValues: [],
+      prevTouch: null, 
     };
   },
   computed: {
@@ -58,6 +61,13 @@ export default {
       }
       return res;
     },
+    disabled() {
+      let res = [];
+      if (Array.isArray(this.disabledSliders)) {
+        res = this.disabledSliders;
+      }
+      return res;
+    },
   },
   created() {
     for (let i = 0; i < this.sliders; i++) {
@@ -66,49 +76,70 @@ export default {
     this.sliderValues = [...this.sliderValues];
   },
   mounted() {
-    // document.body.addEventListener('touchstart', this.onTouchStart);
-    // document.body.addEventListener('touchmove', this.onTouchMove);
-    // document.body.addEventListener('touchend', this.onTouchEnd);    
     document.body.addEventListener('touchstart', this.onTouchEvent);
     document.body.addEventListener('touchmove', this.onTouchEvent);
+    document.body.addEventListener('touchend', this.onTouchEnd);    
   },
   beforeDestroy() {
-    // document.body.removeEventListener('touchstart', this.onTouchStart);
-    // document.body.removeEventListener('touchmove', this.onTouchMove);
-    // document.body.removeEventListener('touchend', this.onTouchEnd);
     document.body.removeEventListener('touchstart', this.onTouchEvent);
     document.body.removeEventListener('touchmove', this.onTouchEvent);
+    document.body.removeEventListener('touchend', this.onTouchEnd);
   },
   methods: {
-    getValueIfInside(x, y, slider) {
-      var rect = slider.bg.getBoundingClientRect();
+    getValueIfInside(x, y, rect) {
       if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
         const h = rect.bottom - rect.top;
         return 1 - (y - rect.top) / h;
       }
       return -1;
     },
+    onTouchEnd(e) {
+      this.prevTouch = null;
+    },
     onTouchEvent(e) {
       e.preventDefault();
+      if (this.disableTouchEvents) return;
+
       const x = e.touches[0].clientX;
       const y = e.touches[0].clientY;
+      let slider = null;
 
+      // check if we are in a slider
       this.sliderElements.forEach((s, i) => {
-        const val = this.getValueIfInside(x, y, s);
-        if (val !== -1) {
-          this.sliderValues[i] = val;
-          this.sliderValues = [...this.sliderValues];
-          this.$emit('change', i, val);
-          // this.$emit('change', this.sliderValues);
+        if (Array.isArray(this.disabled) && this.disabled.indexOf(i) === -1) {
+          const rect = s.bg.getBoundingClientRect();
+          const val = this.getValueIfInside(x, y, rect);
+
+          if (val !== -1) {
+            slider = i;
+            this.sliderValues[i] = val;
+            this.sliderValues = [...this.sliderValues];
+            this.$emit('change', i, val);
+          }
         }
       });
+
+      // if we are not in a slider but were in the previous frame :
+      if (slider === null && this.prevTouch && this.prevTouch.s !== null) {
+        const i = this.prevTouch.s;
+        let val = this.sliderValues[i];
+        const s = this.sliderElements[i];
+        const rect = s.bg.getBoundingClientRect();
+
+        if (y > rect.bottom) {
+          val = 0;
+        } else if (y < rect.top) {
+          val = 1;
+        }
+
+        this.sliderValues[i] = val;
+        this.sliderValues = [...this.sliderValues];
+        this.$emit('change', i, val);
+      }
+
+      // update prev touch information :
+      this.prevTouch = { x, y, s: slider };
     },
-    // onTouchStart(e) {
-    // },
-    // onTouchMove(e) {
-    // },
-    // onTouchEnd(e) {
-    // },
   },
 };
 </script>

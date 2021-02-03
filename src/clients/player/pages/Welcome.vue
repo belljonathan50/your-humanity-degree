@@ -1,14 +1,18 @@
 <template>
   <div>
-    <div class="title">
-      Your humanity degree
+    <div class="flex-container flex-grow-noshrink" style="height: 50%;">
+      <div class="title">
+        Your humanity degree
+      </div>
     </div>
-    <div class="content">
-      Dedicated to Beethoven’s 250 anniversary <br>
-      Digital version <br>
-      For ensemble and smartphones <br>
-      Commissioned by Ensemble consord <br>
-      Supported by Siemens foundation and BTHVN2020
+    <div class="flex-container flex-grow-noshrink" style="height: 50%;">
+      <div style="padding: 1.5em;">
+        <div> Dedicated to Beethoven’s 250th anniversary </div>
+        <div> Digital version </div>
+        <div> For ensemble and smartphones </div>
+        <div> Commissioned by Ensemble consord </div>
+        <div> Supported by Siemens foundation and BTHVN2020 </div>
+      </div>
     </div>
   </div>
 </template>
