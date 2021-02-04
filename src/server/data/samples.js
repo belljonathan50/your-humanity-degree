@@ -1,22 +1,4 @@
 const samples = {
-  surveys: {
-    good: [
-      'quick/quick26',
-      'others/new scene2',
-      'others/new scene5',
-    ],
-    neutral: [
-      'others/trumpet',
-      'others/trumpet2',
-      'others/trumpet3',
-    ],
-    bad: [
-      'words/words2',
-      'words/words3',
-      'words/words22',
-      'words/words23',
-    ],
-  },
   game1: {
     background: [
       [
@@ -45,37 +27,34 @@ const samples = {
       // answers sample set 1
       good: [
         'quick/quick26',
-        'others/new scene2',
-        'others/new scene5',
       ],
       neutral: [
-        'others/trumpet',
-        'others/trumpet2',
-        'others/trumpet3',
+        'others/new scene2',
+        'others/new scene5',
+        // 'others/trumpet',
+        // 'others/trumpet2',
+        // 'others/trumpet3',
       ],
       bad: [
-        'words/words2',
+        // 'words/words2',
         'words/words3',
-        'words/words22',
-        'words/words23',
       ],
     }, {
       // answers sample set 2
       good: [
-        'quick/quick26',
-        'others/new scene2',
-        'others/new scene5',
+        'words/words23',
       ],
       neutral: [
-        'others/trumpet',
-        'others/trumpet2',
-        'others/trumpet3',
+        'words/words22',
+        'quick/quick7',
+        // 'others/trumpet',
+        // 'others/trumpet2',
+        // 'others/trumpet3',
       ],
       bad: [
         'words/words2',
-        'words/words3',
-        'words/words22',
-        'words/words23',
+        // 'words/words3',
+        // 'words/words22',
       ],
     }],
   },
