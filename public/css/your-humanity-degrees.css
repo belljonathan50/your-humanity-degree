@@ -1,5 +1,5 @@
 :root {
-  --multislider-fade-duration: .5s;
+  --multislider-fade-duration: 1s;
   --survey-fg-color: white;
   --survey-bg-color: black;
   --survey-transition-duration: .5s;

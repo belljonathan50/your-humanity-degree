@@ -46,8 +46,8 @@ export default {
   components: { ImageScrambler, PadSurface },
   data() {
     return {
-      columns: 7,
-      rows: 7,
+      columns: 9,
+      rows: 9,
       gameState: this.$experience.states.game5,
       playerState: this.$experience.playerState,
       words: [],

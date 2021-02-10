@@ -57,7 +57,7 @@ import MultiSlider from '../components/MultiSlider.vue';
 
 // see --multislider-fade-duration var in your-humanity-degree.css
 // argument should be the same value in ms
-const granularChain = new GranularChain(null, 5000);
+const granularChain = new GranularChain(null, 1000);
 
 export default {
   components: { FlyingWords, PadSurface, MultiSlider },

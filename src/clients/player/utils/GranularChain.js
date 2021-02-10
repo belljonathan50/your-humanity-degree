@@ -3,6 +3,7 @@ import GranularSampler from './GranularSampler';
 
 class GranularChain {
   constructor(buffer, rampDuration = 0) {
+    this.rampDurationMs = rampDuration;
     this.rampDuration = rampDuration * 0.001;
     this.stopTimeout = null;
 
@@ -66,7 +67,7 @@ class GranularChain {
     this.stopTimeout = setTimeout(() => {
       this.granular.stop();
       this.stopTimeout = null;
-    }, this.rampDuration);
+    }, this.rampDurationMs);
 
     const val = this.gain.gain.value;
     const now = audio.audioContext.currentTime

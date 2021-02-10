@@ -24,8 +24,8 @@
     <div class="flex-grow-noshrink">
       <div class="pads-wrapper beethoven">
         <pad-surface
-          :columns="7"
-          :rows="7"
+          :columns="9"
+          :rows="9"
           :disableTouchEvents="true"
           :disablePadAnimations="true"
           :disabledPads="[]"
