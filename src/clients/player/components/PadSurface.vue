@@ -31,7 +31,10 @@
       <div
         v-for="(pad, i) in layoutVars.pads"
         :style="{
-          'font-size': `${1.5 * pad.size / pad.word.text.length}vw`,
+          // 'font-size': `${1.5 * pad.size / pad.word.text.length}vw`,
+          // 'font-size': `${Math.random() + 1}rem`,
+          'font-size': '1rem',
+          'line-height': '1rem',
           'grid-column': `${Math.floor(i % columns) + 1}`,
           'grid-row': `${Math.floor(i / columns) + 1}`,
           transform: `translate(
@@ -65,6 +68,8 @@ export default {
     'columns',
     'rows',
     'disableTouchEvents',
+    'disableTouchMove',
+    'disablePadAnimations',
     'disabledPads',
     'padSamples',
     'enabledStroke',
@@ -196,13 +201,18 @@ export default {
         if (this.isInside(x, y, p) && !p.padIsDisabled) {
           p.padIsActive = true;
           p.classList.add('active');
-          this.padAnimators[i].start(this.padTransforms[i]);
           this.$emit('click', i);
           this.play(i);
+
+          if (!this.disablePadAnimations) {
+            setTimeout(() => {
+              this.padAnimators[i].start(this.padTransforms[i]);
+            }, 100);
+          }
         }
       }
     },
-    onTouchMove(e) {
+    async onTouchMove(e) {
       e.preventDefault();
       if (this.disableTouchEvents) return;
       
@@ -212,11 +222,16 @@ export default {
       for (let i = 0; i < this.padElements.length; i++) {
         const p = this.padElements[i];
         if (this.isInside(x, y, p)) {
-          if (!p.padIsActive && !p.padIsDisabled) {
+          if (!p.padIsActive && !p.padIsDisabled && !this.disableTouchMove) {
             p.padIsActive = true;
             p.classList.add('active');
-            this.padAnimators[i].start(this.padTransforms[i]);
             this.play(i);
+            
+            if (!this.disablePadAnimations) {
+              setTImeout(() => {
+                this.padAnimators[i].start(this.padTransforms[i]);
+              }, 100);
+            }
           }
         } else if (p.padIsActive) {
           p.padIsActive = false;

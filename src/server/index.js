@@ -20,6 +20,8 @@ import PlayerExperience from './PlayerExperience.js';
 import ControllerExperience from './ControllerExperience.js';
 
 import getConfig from './utils/getConfig.js';
+import protectRoutes from './utils/protectRoutes.js';
+
 const ENV = process.env.ENV || 'default';
 const config = getConfig(ENV);
 const server = new Server();
@@ -30,6 +32,14 @@ server.templateDirectory = path.join('.build', 'server', 'tmpl');
 server.router.use(serveStatic('public'));
 server.router.use('build', serveStatic(path.join('.build', 'public')));
 server.router.use('vendors', serveStatic(path.join('.vendors', 'public')));
+
+console.log(config.env);
+
+protectRoutes(server, {
+  clients: ['controller'],
+  login: 'admin',
+  password: process.env.AUTH_PLUGIN_PASSWORD || config.env.password,
+});
 
 console.log(`
 --------------------------------------------------------
@@ -42,10 +52,13 @@ console.log(`
 // register plugins
 // -------------------------------------------------------------------
 // server.pluginManager.register(pluginName, pluginFactory, [pluginOptions], [dependencies])
+
+/*
 server.pluginManager.register('auth', pluginAuthFactory, {
   // defined e.g. from heroku or balena-cloud dashboard
   password: process.env.AUTH_PLUGIN_PASSWORD || config.env.password,
 }, []);
+//*/
 
 server.pluginManager.register('audio-buffer-loader', pluginAudioBufferLoaderFactory, {}, []);
 server.pluginManager.register('platform', pluginPlatformFactory, {}, []);

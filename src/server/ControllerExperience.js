@@ -4,7 +4,7 @@ class ControllerExperience extends AbstractExperience {
   constructor(server, clientTypes, options = {}) {
     super(server, clientTypes);
 
-    this.auth = this.require('auth');
+    // this.auth = this.require('auth');
   }
 
   async start() {

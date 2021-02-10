@@ -35,5 +35,9 @@
   "httpsInfos": {
     "key": null,
     "cert": null,
-  }
+  },
+
+  // protect routes
+  // (see src/server/utils/protectRoutes.js and src/server.index.js)
+  "password": "azerty"
 }

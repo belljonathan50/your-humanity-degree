@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <div class="flex-grow-shrink" style="flex-basis: 50%;">
+  <div v-bind:class="{ shit: blinking }">
+    <div class="flex-grow-shrink flex-container" style="flex-basis: 50%;">
       <div class="title"> Game 2 </div>
-      <div class="subtitle">
+      <div style="text-align: center">
         Click the words
         <br>
         that suit you
@@ -15,20 +15,22 @@
           <multi-slider
             v-bind:class="showSliders ? '' : 'hidden'"
             :sliders="3"
-            :disabledSliders="[1]"
+            :disabledSliders="[]"
             :disableTouchEvents="!showSliders"
             @change="onSliderValueChanged"
           />
         </div>
         <flying-words
           :words="words"
+          :negativeWordsPercentage="negativeWordsPercentage"
+          :widthHeightRatio="columns / rows"
           :wordSamples="wordSamples"
           :disableTouchEvents="showSliders"
           @click="onClickWord"
         />
         <pad-surface
-          :columns="5"
-          :rows="5"
+          :columns="columns"
+          :rows="rows"
           :disableTouchEvents="showSliders"
           :disabledPads="playerState.getValues().disabledPads"
           :padSamples="padSamples"
@@ -61,13 +63,17 @@ export default {
   components: { FlyingWords, PadSurface, MultiSlider },
   data() {
     return {
+      columns: 5,
+      rows: 5,
       words,
       gameState: this.$experience.states.game2,
       playerState: this.$experience.playerState,
       padSampleSet: 0,
       wordSampleSet: 0,
       showSliders: false,
-      // granularChain: null,
+      negativeWordsPercentage: 0,
+      blinkTimeout: null,
+      blinking: false,
     }
   },
   computed: {
@@ -84,6 +90,54 @@ export default {
     }
   },
   async created() {
+    this.gameState.subscribe(updates => {
+      if (updates.hasOwnProperty('showSliders')) {
+        this.showSliders = updates.showSliders;
+        if (this.showSliders) {
+          granularChain.start();
+        } else {
+          granularChain.stop();
+        }
+      }
+
+      if (updates.hasOwnProperty('padSampleSet')) {
+        this.padSampleSet = updates.padSampleSet;
+      }
+
+      if (updates.hasOwnProperty('negativeWordsPercentage')) {
+        this.negativeWordsPercentage = updates.negativeWordsPercentage;
+      }
+
+      if (updates.hasOwnProperty('wordSampleSet')) {
+        this.wordSampleSet = updates.wordSampleSet;
+      }      
+    });
+
+    const {
+      showSliders,
+      padSampleSet,
+      wordSampleSet,
+      negativeWordsPercentage,
+    } = this.gameState.getValues();
+
+    granularChain.buffer = this.sliderBuffer;
+    granularChain.setGranular(0);
+    granularChain.setFilter(0);
+    granularChain.setDistortion(0);
+
+    this.showSliders = showSliders;
+    if (this.showSliders) {
+      granularChain.start();
+    // } else {
+    //   granularChain.stop();
+    }
+
+    this.padSampleSet = padSampleSet;
+    this.wordSampleSet = wordSampleSet;
+    this.negativeWordsPercentage = negativeWordsPercentage;
+
+    ////////// SCORE STUFF :
+
     const { totalScore, minScore, maxScore } = this.playerState.getValues();
     // const normScore = maxScore === minScore
     //                 ? 0
@@ -107,52 +161,14 @@ export default {
       disabledPads.push(enabledPads.splice(index, 1)[0]);
     }
 
-    granularChain.buffer = this.sliderBuffer;
-    granularChain.setGranular(0);
-    granularChain.setFilter(0);
-    granularChain.setDistortion(0);
-
     await this.playerState.set({
       disabledPads,
       unselectedFlyingWords: words,
     });
   },
   async mounted() {    
-    this.gameState.subscribe(updates => {
-      if (updates.hasOwnProperty('showSliders')) {
-        this.showSliders = updates.showSliders;
-        if (this.showSliders) {
-          granularChain.start();
-        } else {
-          granularChain.stop();
-        }
-      }
 
-      if (updates.hasOwnProperty('padSampleSet')) {
-        this.padSampleSet = updates.padSampleSet;
-      }
-
-      if (updates.hasOwnProperty('wordSampleSet')) {
-        this.wordSampleSet = updates.wordSampleSet;
-      }      
-    });
-
-    const {
-      showSliders,
-      padSampleSet,
-      wordSampleSet
-    } = this.gameState.getValues();
-
-    this.showSliders = showSliders;
-    if (this.showSliders) {
-      granularChain.start();
-    // } else {
-    //   granularChain.stop();
-    }
-
-    this.padSampleSet = padSampleSet;
-    this.wordSampleSet = wordSampleSet;
-
+    /*
     let { minScore, maxScore } = this.playerState.getValues();
 
     words.forEach(w => {
@@ -161,6 +177,7 @@ export default {
     });
 
     await this.playerState.set({ minScore, maxScore });
+    //*/
   },
   beforeDestroy() {
     // this.granularChain.deinit();
@@ -168,8 +185,20 @@ export default {
     granularChain.stop();
   },
   methods: {
-    async onClickWord(word) {
-      const { unselectedFlyingWords, totalScore } = this.playerState.getValues();
+    // see flyingWords class' getDisplayedWords method
+    // (activeWords are not included if they are out of bounds)
+    async onClickWord(word, displayedWords) {
+      let {
+        unselectedFlyingWords,
+        totalScore,
+        minScore,
+        maxScore,
+      } = this.playerState.getValues();
+
+      /*
+      // is this still relevant ? or do we allow words to be reused ?
+      // if we allow this, minScore and maxScore have to be updated on each
+      // word clicked (see comment below), and not computed in mounted() 
 
       for (let i = unselectedFlyingWords.length - 1; i >= 0 ; i--) {
         const w = unselectedFlyingWords[i];
@@ -179,11 +208,41 @@ export default {
           break;
         }
       }
+      //*/
+
+      // now get all currently displayed words and their scores
+      // to update minScore and maxScore
+
+      let min = +Infinity;
+      let max = -Infinity;
+
+      displayedWords.forEach(w => {
+        if (w.score > max) max = w.score;
+        if (w.score < min) min = w.score;
+      });
+
+      totalScore += word.score;
+      minScore += min;
+      maxScore += max;
 
       await this.playerState.set({
         unselectedFlyingWords,
-        totalScore: totalScore + word.score,
+        totalScore,
+        minScore,
+        maxScore,
       });
+
+      // the method based on requestAnimationFrame used in MultiSlider.vue's
+      // blinkSlider method doesn't always work here ... investigate why :/
+
+      if (word.score < 0) {
+        this.blinking = false;
+        await this.$nextTick();
+        this.blinking = true;
+        setTimeout(() => {
+          this.blinking = false;
+        }, 1000);
+      }
     },
     onClickPad(i) {
       // todo ?

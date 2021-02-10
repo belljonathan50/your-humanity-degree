@@ -7,8 +7,8 @@
       </transition>
     </div>
     <toast
-      :class="showToast ? '' : 'hidden'"
-      :content="toastContent"
+      v-bind:class="{ hidden: !showToast }"
+      :content="toastMessage"
     />
   </div>
 </template>
@@ -24,7 +24,7 @@ export default {
     return {
       currentPage: null,
       showToast: false,
-      toastContent: 'yaboodabidoo',
+      toastMessage: '',
       globalState: this.$experience.states.globals,
       playerState: this.$experience.playerState,
     };
@@ -35,8 +35,12 @@ export default {
         this.currentPage = updates.currentPage;
       }
 
-      if (updates.hasOwnProperty('toastContent')) {
-        this.toastContent = updates.toastContent;
+      if (updates.hasOwnProperty('showToast')) {
+        this.showToast = updates.showToast;
+      }
+
+      if (updates.hasOwnProperty('toastMessage')) {
+        this.toastMessage = updates.toastMessage;
       }
 
       if (updates.hasOwnProperty('connectedClients')) {
@@ -46,10 +50,17 @@ export default {
 
     await this.playerState.set({ unselectedFlyingWords: flyingWords });
 
-    const { currentPage, toastContent, connectedClients } = this.globalState.getValues();    
+    const {
+      currentPage,
+      showToast,
+      toastMessage,
+      connectedClients
+    } = this.globalState.getValues();
+
     this.currentPage = currentPage;
-    console.log(`connected clients : ${connectedClients}`);
-    // this.toastContent = toastContent;
+    this.showToast = showToast;
+    this.toastMessage = toastMessage;
+    // console.log(`connected clients : ${connectedClients}`);
 
     document.body.addEventListener('touchmove', this.preventTouchEvents, {
       passive: false

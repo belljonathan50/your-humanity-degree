@@ -28,6 +28,12 @@ export default {
     default: 0,
     list: padSampleSets,
   },
+  negativeWordsPercentage: {
+    type: 'float',
+    min: 0,
+    max: 100,
+    default: 50,
+  },  
   wordSampleSet: {
     type: 'enum',
     default: 0,

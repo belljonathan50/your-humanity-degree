@@ -13,7 +13,7 @@ class ControllerExperience extends AbstractExperience {
     this.rafId = null;
 
     // require plugins if needed
-    this.auth = this.require('auth');
+    // this.auth = this.require('auth');
 
     renderInitializationScreens(client, config, $container);
   }

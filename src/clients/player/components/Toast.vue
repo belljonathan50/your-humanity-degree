@@ -1,6 +1,7 @@
 <template>
   <div class="toast">
-    {{ content }}
+    <div v-html="content"></div>
+    <!-- {{ content }} -->
   </div>
 </template>
 

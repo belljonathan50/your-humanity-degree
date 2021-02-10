@@ -8,6 +8,14 @@ export default {
     type: 'boolean',
     default: false,
   },
+  showToast: {
+    type: 'boolean',
+    default: false,
+  },
+  toastMessage: {
+    type: 'any',
+    default: '',
+  },
   connectedClients: {
     type: 'integer',
     min: 0,

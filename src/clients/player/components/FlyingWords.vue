@@ -2,10 +2,24 @@
   <div class="flying-words">
     <!-- <canvas ref="canvas"/> -->
     <div class="flying-word"
-      v-for="word in words"
+      v-for="(word, i) in words"
       :ref="word.text">
-      <div @click="onClickWord(word)">
-        {{ word.text }}
+      <div
+        @click="onClickWord(word)"
+        :style="{ 'pointer-events': disabled[word.text] ? 'none' : 'auto' }">
+        <div
+          v-if="disabled[word.text]"
+          style="position: absolute; width: 100%; height: 100%;">
+          <exploding-word
+            :word="word.text"
+            @end="onExplodingAnimationEnd(word)"/>
+        </div>
+        <div
+          :style="{
+          visibility: disabled[word.text] ? 'hidden' : 'visible',
+          }">
+          {{ word.text }}
+        </div>
       </div>
     </div>
   </div>
@@ -13,12 +27,26 @@
 
 <script>
 import FlyingWords from '../utils/FlyingWords';
+import ExplodingWord from './ExplodingWord.vue';
 
 export default {
-  props: [ 'words', 'wordSamples', 'disableTouchEvents' ],
+  components: { ExplodingWord },
+  props: [
+    'words',
+    'negativeWordsPercentage',
+    'widthHeightRatio',
+    'wordSamples',
+    'disableTouchEvents',
+  ],
+  watch: {
+    negativeWordsPercentage(newVal, oldVal) {
+      this.flyingWords.setNegativeWordsPercentage(newVal);
+    },
+  },
   data() {
     return {
       rafId: null,
+      disabled: {},
     };
   },
   computed: {
@@ -32,18 +60,25 @@ export default {
     },
   },
   created() {
-    // const { width, height } = this.layoutVars;
     const width = 100;
-    const height = 100;
+    const height = 100 / this.widthHeightRatio;
     const options = {
       minSpeed: height * 0.05, // per sec
       maxSpeed: height * 0.1, // per sec
       minInterval: 2, // secs
       maxInterval: 3, // secs
     };
-    console.log('creating new FlyingWords class with words :');
-    console.log(this.words);
+
+    this.words.forEach(w => {
+      this.disabled[w.text] = false;
+    });
+
     this.flyingWords = new FlyingWords(width, height, this.words, options);
+    this.flyingWords.setNegativeWordsPercentage(this.negativeWordsPercentage);
+    this.flyingWords.on('disabled', (wordText, disabled) => {
+      // console.log(`${disabled ? 'dis' : 'en'}abling word ${wordText}`);
+      this.disabled = Object.assign({}, this.disabled, {[wordText]: disabled});
+    });
   },
   mounted() {
     // this.ctx = this.$refs.canvas.getContext('2d');
@@ -64,14 +99,22 @@ export default {
     onClickWord(word) {
       if (this.disableTouchEvents) return;
       
-      console.log(`clicked ${word.text} with score ${word.score}`);
+      // console.log(`clicked ${word.text} with score ${word.score}`);
+      const displayedWords = this.flyingWords.getDisplayedWords();
       this.flyingWords.disableWord(word, this.wordElements);
-      this.$emit('click', word);
+      this.$emit('click', word, displayedWords);
 
-      document.body.classList.add('blink');
-      setTimeout(() => {
-        document.body.classList.remove('blink');
-      }, 500);
+      /*
+      if (word.score < 0) {
+        document.body.classList.add('bad-word-glow');
+        setTimeout(() => {
+          document.body.classList.remove('bad-word-glow');
+        }, 500);
+      }
+      */
+    },
+    onExplodingAnimationEnd(word) {
+      this.flyingWords.enableWord(word, this.wordElements);
     },
   },
 };

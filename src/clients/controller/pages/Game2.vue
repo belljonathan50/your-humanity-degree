@@ -32,6 +32,18 @@ export default {
       },
     });
 
+    controls.negativeWordsPercentage = new controllers.Slider({
+      label: 'Negative words %',
+      min: 0,
+      max: 100,
+      step: 1,
+      default: 50,
+      container: '#controller-game2',
+      callback: value => {
+        state.set({ negativeWordsPercentage: value });
+      },
+    });
+
     /*
     controls.wordSampleSet = new controllers.SelectButtons({
       label: 'Word samples',

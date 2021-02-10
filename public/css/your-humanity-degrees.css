@@ -4,6 +4,13 @@
   --survey-bg-color: black;
   --survey-transition-duration: .5s;
   --flying-words-font-size: 1.5em;
+
+  --pads-fill-color: black;
+  --pads-nofill-color: transparent;
+  --pads-stroke-color: white;
+  --pads-nostroke-color: black;
+
+  --shit-color: #7b5804;
 }
 
 * {
@@ -35,6 +42,14 @@ body.blink {
   animation-iteration-count: 5;
 }
 
+@keyframes blinking-visibility {
+  to { visibility: hidden; }
+}
+
+strong.blinking-cursor {
+  animation: blinking-visibility .75s steps(2, start) infinite;
+}
+
 div#main-container {
   width: 100%;
   height: 100%;
@@ -52,6 +67,17 @@ div.page-wrapper > div {
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+@keyframes div-shit-glow {
+  0% { background-color: transparent; }
+  10% { background-color: var(--shit-color); }
+  100% { background-color: transparent; }
+}
+
+div.shit {
+  animation-name: div-shit-glow;
+  animation-duration: 1s;
 }
 
 div.fill {
@@ -118,16 +144,23 @@ div.scrolly {
   left: 0;
   z-index: 100;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  font-size: 1.4em;
+  padding: 10%;
+  word-break: break-word;
+  background-color: rgba(0,0,0,0.8);
+
   opacity: 1;
   visibility: visible;
+  transition: opacity .5s, visibility .5s;
 }
 
 .toast.hidden {
   opacity: 0;
   visibility: hidden;
-  transition: opacity .5s, visibility: .5s;
+  transition: opacity .5s, visibility .5s;
 }
 
 /* * * * * * * * * * SURVEY * * * * * * * * */
@@ -262,10 +295,15 @@ div.flying-word {
   position: absolute;
   top: 100%;
   text-align: center;
-  font-size: var(--flying-words-font-size);  
+  font-size: var(--flying-words-font-size);
+  pointer-events: auto;
 
   opacity: 1;
   visibility: visible;
+}
+
+div.flying-word.selected {
+  pointer-events: none;
 }
 
 div.flying-word > div {
@@ -273,6 +311,12 @@ div.flying-word > div {
   pointer-events: auto;
   position: relative;
   left: -50%;
+  /*background-color: rgba(255,255,255,0.3);*/
+  padding: 0.2em;
+}
+
+div.flying-word > div div {
+  pointer-events: none;
 }
 
 /* useless now, transition made with javascript */
@@ -296,6 +340,29 @@ div.pads-wrapper.beethoven {
   background-size: 100%;
 }
 
+div.image-scrambler {
+  position: absolute; 
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;  
+}
+
+div.image-scrambler > div {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+}
+
+div.image-scrambler > div > div {
+ flex: 1 1 auto;
+}
+
+/*
+div.pads {
+  visibility: hidden;
+}
+*/
+
 div.pads svg {
   width: 100%;
   height: 100%;
@@ -305,29 +372,46 @@ div.pads svg {
 }
 
 div.pads svg path {
-  fill: black;
+  stroke-width: 0;
+  fill: var(--pads-fill-color);
   pointer-events: auto;
+}
+
+@keyframes svg-fill-stroke-shit-glow {
+  0% { fill: var(--pads-fill-color); stroke: var(--pads-nostroke-color); }
+  10% { fill: var(--shit-color); stroke: var(--shit-color); }
+  100% { fill: var(--pads-fill-color); stroke: var(--pads-nostroke-color); }
+}
+
+div.shit div.pads svg path {
+  animation-name: svg-fill-stroke-shit-glow;
+  animation-duration: 1s;
+}
+
+div.shit div.pads svg rect.disabled.disabled-fill:not(.disabled-stroke) {
+  animation-name: svg-fill-stroke-shit-glow !important;
+  animation-duration: 1s !important;
 }
 
 div.pads svg rect {
   /* this lets clicks go through and allows underlying text to be clicked */
   pointer-events: none;
   stroke-width: 0.2;
-  stroke: black; /* this should always be the background color */
-  fill: transparent;
+  stroke: var(--pads-nostroke-color); /* this should always be the background color */
+  fill: var(--pads-nofill-color);
   transition: fill 0.2s;
 }
 
 div.pads svg rect.enabled-stroke:not(.disabled) {
-  stroke: white;
+  stroke: var(--pads-stroke-color);
 }
 
 div.pads svg rect.enabled-fill:not(.disabled) {
-  fill: black;
+  fill: var(--pads-fill-color);
 }
 
 div.pads svg rect.active {
-  fill: white !important;
+  fill: var(--pads-stroke-color) !important;
   transition: fill 0.01s;
 }
 
@@ -337,16 +421,11 @@ div.pads svg rect.disabled {
 }
 
 div.pads svg rect.disabled.disabled-stroke {
-  stroke: white;
+  stroke: var(--pads-stroke-color);
 }
 
 div.pads svg rect.disabled.disabled-fill {
-  fill: black;
-}
-
-div.pads svg text {
-  fill: white;
-  /*font-size: 1em;*/
+  fill: var(--pads-fill-color);
 }
 
 /* this wrapper is needed for f*****g safari */
@@ -396,11 +475,18 @@ div.multislider-wrapper {
   height: 100%;
   display: flex;
   flex-direction: row;
-  padding: 5px;
+  padding: 1.8%;
   pointer-events: none;
 }
 
 div.multislider {
+  --multislider-bg: #333;
+  --multislider-fg: #eee;
+  --multislider-disabled-bg: rgba(60, 60, 60, 0.9);
+  --multislider-disabled-fg: rgba(220, 220, 220, 0.5);
+  --multislider-glowing-bg: #555;
+  --multislider-glowing-fg: #fff;
+
   width: 100%;
   height: 100%;
   opacity: 1;
@@ -418,42 +504,73 @@ div.multislider.hidden {
     visibility var(--multislider-fade-duration);
 }
 
-/*div.multislider div.slider {*/
 div.multislider svg {
   width: 100%;
   height: 100%;
   display: block;
   position: relative;
-  /*flex: 1 1 auto;*/
 }
 
-/*div.multislider div.slider svg rect.bg {*/
 div.multislider svg rect.bg {
-  fill: #333;
-  stroke: black;
-  stroke-width: 0;
+  fill: var(--multislider-bg);
+  stroke: var(--multislider-bg);
+  stroke-width: 0.1;
   z-index: 1;
+}
+
+div.multislider svg rect.fg {
+  fill: var(--multislider-fg);
+  stroke: var(--multislider-fg);
+  stroke-width: 0.1;
+  z-index: 2;
+}
+
+@keyframes multislider-glowing-bg {
+  0% {
+    fill: var(--multislider-bg);
+    stroke: var(--multislider-bg);
+  }
+  10% {
+    fill: var(--multislider-glowing-bg);
+    stroke: var(--multislider-glowing-bg);
+  }
+  100% {
+    fill: var(--multislider-bg);
+    stroke: var(--multislider-bg);
+  }
+}
+
+@keyframes multislider-glowing-fg {
+  0% {
+    fill: var(--multislider-fg);
+    stroke: var(--multislider-fg);
+  }
+  10% {
+    fill: var(--multislider-glowing-fg);
+    stroke: var(--multislider-glowing-fg);
+  }
+  100% {
+    fill: var(--multislider-fg);
+    stroke: var(--multislider-fg);
+  }
+}
+
+div.multislider svg rect.bg.blinking:not(.disabled) {
+  animation-name: multislider-glowing-bg;
+  animation-duration: .5s;
+}
+
+div.multislider svg rect.fg.blinking:not(.disabled) {
+  animation-name: multislider-glowing-fg;
+  animation-duration: .5s;
 }
 
 div.multislider svg rect.bg.disabled {
   fill: rgba(60, 60, 60, 0.9);
 }
 
-div.multislider svg rect.fg {
-/*div.multislider div.slider svg rect.fg {*/
-  fill: #eee;
-  stroke: black;
-  stroke-width: 0;
-  z-index: 2;
-}
-
 div.multislider svg rect.fg.disabled {
   fill: rgba(220, 220, 220, 0.5);
-}
-
-div.multislider svg rect.handle {
-  fill: #fff;
-  z-index: 3;
 }
 
 /* * * * * * * * TRANSITIONS * * * * * * * */
