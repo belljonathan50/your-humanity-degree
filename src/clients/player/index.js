@@ -2,7 +2,7 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { audioContext } from 'waves-audio';
 import { Client } from '@soundworks/core/client';
-import initQoS from 'soundworks-template-helpers/client/init-qos.js';
+import initQoS from '@soundworks/template-helpers/client/init-qos.js';
 
 import pluginPlatformFactory from '@soundworks/plugin-platform/client';
 import pluginAudioBufferLoaderFactory from '@soundworks/plugin-audio-buffer-loader/client';

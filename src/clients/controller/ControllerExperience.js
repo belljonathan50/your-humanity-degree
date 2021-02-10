@@ -1,5 +1,5 @@
 import { AbstractExperience } from '@soundworks/core/client';
-import renderInitializationScreens from 'soundworks-template-helpers/client/render-initialization-screens.js';
+import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 
 import Vue from 'vue';
 import Controller from './Controller.vue';

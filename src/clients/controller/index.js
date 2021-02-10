@@ -1,9 +1,9 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { Client } from '@soundworks/core/client';
-import initQoS from 'soundworks-template-helpers/client/init-qos.js';
+import initQoS from '@soundworks/template-helpers/client/init-qos.js';
 
-import pluginAuthFactory from 'soundworks-plugin-auth/client';
+// import pluginAuthFactory from 'soundworks-plugin-auth/client';
 
 import ControllerExperience from './ControllerExperience.js';
 
@@ -20,7 +20,7 @@ async function launch($container, index) {
     // register plugins
     // -------------------------------------------------------------------
     // client.pluginManager.register(pluginName, pluginFactory, [pluginOptions], [dependencies])
-    client.pluginManager.register('auth', pluginAuthFactory, {});
+    // client.pluginManager.register('auth', pluginAuthFactory, {});
 
     // -------------------------------------------------------------------
     // launch application

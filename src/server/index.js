@@ -4,7 +4,7 @@ import path from 'path';
 import serveStatic from 'serve-static';
 import compile from 'template-literal';
 
-import pluginAuthFactory from 'soundworks-plugin-auth/server';
+// import pluginAuthFactory from 'soundworks-plugin-auth/server';
 import pluginPlatformFactory from '@soundworks/plugin-platform/server';
 import pluginAudioBufferLoaderFactory from '@soundworks/plugin-audio-buffer-loader/server';
 

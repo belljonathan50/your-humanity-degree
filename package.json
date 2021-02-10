@@ -28,8 +28,7 @@
     "@soundworks/core": "^3.0.0",
     "@soundworks/plugin-audio-buffer-loader": "^1.0.0",
     "@soundworks/plugin-platform": "^1.0.1",
-    "soundworks-template-helpers": "github:josephlarralde/soundworks-template-helpers",
-    "soundworks-plugin-auth": "github:josephlarralde/soundworks-plugin-auth",
+    "@soundworks/template-helpers": "^1.1.0",
     "@webcomponents/webcomponentsjs": "^2.4.3",
     "core-js": "^3.6.5",
     "json5": "^2.1.0",
@@ -37,14 +36,14 @@
     "lit-html": "^1.1.2",
     "regenerator-runtime": "^0.13.7",
     "serve-static": "^1.14.1",
+    "soundworks-template-build-vue": "github:collective-soundworks/soundworks-template-build-vue",
     "template-literal": "^1.0.3",
     "vue": "^2.6.12",
     "vuex": "^3.5.1",
-    "waves-audio": "^0.5.2",
-    "soundworks-template-build-vue": "github:collective-soundworks/soundworks-template-build-vue"
+    "waves-audio": "^0.5.2"
   },
   "devDependencies": {},
-  "engines" : {
+  "engines": {
     "node": "14.15.4"
   }
 }
