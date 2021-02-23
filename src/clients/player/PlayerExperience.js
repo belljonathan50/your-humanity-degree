@@ -24,15 +24,17 @@ class PlayerExperience extends AbstractExperience {
   async start() {
     super.start();
 
+    this.liveModeState = await this.client.stateManager.attach('liveMode');
+    this.globalState = await this.client.stateManager.attach('globals');
     this.playerState = await this.client.stateManager.create('player');
 
-    this.states = {};
-    this.states.globals = await this.client.stateManager.attach('globals');
-    this.states.game1 = await this.client.stateManager.attach('game1');
-    this.states.game2 = await this.client.stateManager.attach('game2');
-    this.states.game3 = await this.client.stateManager.attach('game3');
-    this.states.game4 = await this.client.stateManager.attach('game4');
-    this.states.game5 = await this.client.stateManager.attach('game5');
+    // this.states = {};
+    // this.states.globals = await this.client.stateManager.attach('globals');
+    // this.states.game1 = await this.client.stateManager.attach('game1');
+    // this.states.game2 = await this.client.stateManager.attach('game2');
+    // this.states.game3 = await this.client.stateManager.attach('game3');
+    // this.states.game4 = await this.client.stateManager.attach('game4');
+    // this.states.game5 = await this.client.stateManager.attach('game5');
 
     Vue.prototype.$experience = this;
 

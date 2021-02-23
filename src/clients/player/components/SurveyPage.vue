@@ -1,8 +1,8 @@
 <template>
   <div>
     <survey
-      ref="survey"
       :data="surveyData"
+      :offset="offset"
       @click="onSurveyAnswerClicked"
     />
   </div>
@@ -11,38 +11,36 @@
 <script>
 import { samples } from '../../../server/data/samples';
 import SimpleSampler from '../utils/SimpleSampler';
-import Survey from '../components/Survey.vue';
+import Survey from './Survey.vue';
 
 export default {
   components: { Survey },
+  // surveyData should be imported from ../../../server/data/surveyX
+  // sampleSets sould be defined as samples.surveyX.answers, samples being
+  // imported from ../../../server/data/samples
+  // sampleSetStateId should be surveyXSampleSet (as defined in games schema)
+  props: [ 'surveyData', 'offset', 'sampleSets', 'sampleSetStateId' ],
   data() {
     return {
-      gameState: this.$experience.states.game1,
+      gameState: this.$experience.gameState,
       playerState: this.$experience.playerState,
-      surveyData: [],
       sampler: null,
-      backgroundSampleSet: 0,
-      answerSampleSet: 0,
+      sampleSetIndex: 0,
+      unsubscribe: () => {},
     };
   },
   mounted() {
-    // this.$experience.playInstrumentalPart(0);
-    this.gameState.subscribe(async updates => {
-      // if (updates.hasOwnProperty('surveySpeed')) {
-      //   await this.$refs.survey.setSpeed(updates.surveySpeed);
-      // }
-
-      // if (updates.hasOwnProperty('backgroundSampleSet')) {
-      //   this.backgroundSampleSet = updates.backgroundSampleSet;
-      // }
-
-      if (updates.hasOwnProperty('answerSampleSet')) {
-        this.answerSampleSet = updates.answerSampleSet;
+    this.unsubscribe = this.gameState.subscribe(async updates => {
+      if (updates.hasOwnProperty(this.sampleSetStateId)) {
+        this.sampleSetIndex = updates[this.sampleSetStateId];
       }
     });
 
-    this.surveyData = this.gameState.getValues().survey;
+    this.sampleSetIndex = this.gameState.getValues()[this.sampleSetStateId];
     this.sampler = new SimpleSampler(this.$experience.audio.audioContext);
+  },
+  beforeDestroy() {
+    this.unsubscribe();
   },
   methods: {
     async onSurveyAnswerClicked({ score, min, max }) {
@@ -54,11 +52,17 @@ export default {
         result = 'bad';
       }
 
-      const sampleSet = samples.game1.answers[this.answerSampleSet];
+      if (min === max) {
+        result = 'neutral';
+      }
+
+      const sampleSet = this.sampleSets[this.sampleSetIndex];
+
       const length = sampleSet[result].length;
       const sample = sampleSet[result][Math.floor(Math.random() * length)];
       const buffer = this.$experience.audioBufferLoader.data[sample];
-      this.sampler.stop(); // in case we go too fast
+
+      this.sampler.stop(); // in case we went too fast (todo : allow polyphony instead)
       this.sampler.play(buffer);
 
       let { totalScore, minScore, maxScore } = this.playerState.getValues();

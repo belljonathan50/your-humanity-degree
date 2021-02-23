@@ -38,11 +38,11 @@ pluginPlatformFactory.addFeatureDefinition({
     ) || false;
 
     if (!ios || (ios && ios >= 10.3)) {
-      console.log('not ios or ios > 10.2 :)');
+      // console.log('not ios or ios > 10.2 :)');
       return true;
     }
 
-    console.log('ios < 10.3 :(');
+    // console.log('ios < 10.3 :(');
     return false;
   },
 });

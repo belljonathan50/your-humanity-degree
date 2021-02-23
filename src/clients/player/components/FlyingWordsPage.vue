@@ -24,7 +24,7 @@
           :words="words"
           :negativeWordsPercentage="negativeWordsPercentage"
           :widthHeightRatio="columns / rows"
-          :wordSamples="wordSamples"
+          :wordSamples="[]"
           :disableTouchEvents="showSliders"
           @click="onClickWord"
         />
@@ -33,12 +33,14 @@
           :rows="rows"
           :disableTouchEvents="showSliders"
           :disabledPads="playerState.getValues().disabledPads"
+          :defaultPadTransforms="playerState.getValues().padTransforms"
           :padSamples="padSamples"
           :enabledStroke="true"
           :disabledStroke="false"
           :enabledFill="false"
           :disabledFill="true"
           @click="onClickPad"
+          @padTransforms="onPadTransforms"
         />
       </div>
     </div>
@@ -61,80 +63,82 @@ const granularChain = new GranularChain(null, 1000);
 
 export default {
   components: { FlyingWords, PadSurface, MultiSlider },
+  props: [
+    'padSampleSets',
+    'granularSampleSets',
+    'padSampleSetStateId',
+    'granularSampleSetStateId'
+  ],
   data() {
     return {
       columns: 5,
       rows: 5,
       words,
-      gameState: this.$experience.states.game2,
+      gameState: this.$experience.gameState,
       playerState: this.$experience.playerState,
-      padSampleSet: 0,
-      wordSampleSet: 0,
+      padSampleSetIndex: 0,
+      padTransforms: [],
+      granularSampleSetIndex: 0,
       showSliders: false,
       negativeWordsPercentage: 0,
       blinkTimeout: null,
       blinking: false,
+      unsubscribe: () => {},
     }
   },
   computed: {
     padSamples() {
-      return samples.game2.pads[this.padSampleSet];
-    },
-    wordSamples() {
-      return samples.game2.words[this.wordSampleSet];
+      return this.padSampleSets[this.padSampleSetIndex];
     },
     sliderBuffer() {
-      const arr = samples.game3.sliders[0];
-      const sample = arr[Math.round(Math.random() * (arr.length - 1))];
+      const arr = this.granularSampleSets[this.granularSampleSetIndex];
+      const sample = arr[Math.floor(Math.random() * (arr.length))];
       return this.$experience.audioBufferLoader.data[sample];
     }
   },
   async created() {
-    this.gameState.subscribe(updates => {
-      if (updates.hasOwnProperty('showSliders')) {
-        this.showSliders = updates.showSliders;
+    this.unsubscribe = this.gameState.subscribe(updates => {
+      if (updates.hasOwnProperty('flyingWordsShowSliders')) {
+        this.showSliders = updates.flyingWordsShowSliders;
         if (this.showSliders) {
+          // console.log('starting');
           granularChain.start();
         } else {
+          // console.log('stopping');
           granularChain.stop();
         }
       }
 
-      if (updates.hasOwnProperty('padSampleSet')) {
-        this.padSampleSet = updates.padSampleSet;
+      if (updates.hasOwnProperty('flyingWordsNegativeWordsPercentage')) {
+        this.negativeWordsPercentage = updates.flyingWordsNegativeWordsPercentage;
       }
 
-      if (updates.hasOwnProperty('negativeWordsPercentage')) {
-        this.negativeWordsPercentage = updates.negativeWordsPercentage;
+      if (updates.hasOwnProperty(this.padSampleSetStateId)) {
+        this.padSampleSetIndex = updates[this.padSampleSetStateId];
       }
 
-      if (updates.hasOwnProperty('wordSampleSet')) {
-        this.wordSampleSet = updates.wordSampleSet;
-      }      
+      if (updates.hasOwnProperty(this.granularSampleSetStateId)) {
+        this.granularSampleSetIndex = updates[this.granularSampleSetStateId];
+      }
     });
 
-    const {
-      showSliders,
-      padSampleSet,
-      wordSampleSet,
-      negativeWordsPercentage,
-    } = this.gameState.getValues();
-
+    console.log(this.sliderBuffer);
     granularChain.buffer = this.sliderBuffer;
     granularChain.setGranular(0);
     granularChain.setFilter(0);
     granularChain.setDistortion(0);
 
-    this.showSliders = showSliders;
-    if (this.showSliders) {
-      granularChain.start();
-    // } else {
-    //   granularChain.stop();
-    }
+    const gameStateValues = this.gameState.getValues();
 
-    this.padSampleSet = padSampleSet;
-    this.wordSampleSet = wordSampleSet;
-    this.negativeWordsPercentage = negativeWordsPercentage;
+    const {
+      flyingWordsShowSliders,
+      flyingWordsNegativeWordsPercentage
+    } = gameStateValues;
+
+    this.showSliders = flyingWordsShowSliders;
+    this.negativeWordsPercentage = flyingWordsNegativeWordsPercentage;
+    this.padSampleSetIndex = gameStateValues[this.padSampleSetStateId];
+    this.granularSampleSetIndex = gameStateValues[this.granularSampleSetStateId];
 
     ////////// SCORE STUFF :
 
@@ -144,8 +148,10 @@ export default {
     //                 : (totalScore - minScore) / (maxScore - minScore);
     const normScore = 1;
 
+    const nbPads = this.columns * this.rows;
     const minEnabledPads = 5;
-    const maxEnabledPads = 20;
+    const maxEnabledPads = nbPads - 5;
+
     const nbPadsToDisable = minEnabledPads +
                             Math.floor(
                               (1 - normScore) *
@@ -154,7 +160,10 @@ export default {
 
     const disabledPads = [];
     const enabledPads = [];
-    for (let i = 0; i < 25; i++) { enabledPads.push(i); }
+
+    for (let i = 0; i < nbPads; i++) {
+      enabledPads.push(i);
+    }
 
     for (let i = 0; i < nbPadsToDisable; i++) {
       const index = Math.floor(Math.random() * enabledPads.length);
@@ -166,23 +175,22 @@ export default {
       unselectedFlyingWords: words,
     });
   },
-  async mounted() {    
-
-    /*
-    let { minScore, maxScore } = this.playerState.getValues();
-
-    words.forEach(w => {
-      if (w.score < 0) minScore += w.score;
-      if (w.score > 0) maxScore += w.score;
-    });
-
-    await this.playerState.set({ minScore, maxScore });
-    //*/
+  mounted() {
+    // this MUST be in mounted hook, otherwise the beforeDestroy hook of the
+    // previous instance of the component can execute granularChain.stop AFTER the
+    // created hook of the new component executes granularChain.start, which leads
+    // to the granular not playing in the new component instance ...
+    if (this.showSliders) {
+      // console.log('starting granular player');
+      granularChain.start();
+    }    
   },
   beforeDestroy() {
-    // this.granularChain.deinit();
-    // this.granularChain = null;
+    this.unsubscribe();
+    // console.log('stopping granular player');
     granularChain.stop();
+    // await this.playerState.set({ padTransforms: this.padTransforms });
+    // console.log(this.playerState.getValues().padTransforms);
   },
   methods: {
     // see flyingWords class' getDisplayedWords method
@@ -246,6 +254,9 @@ export default {
     },
     onClickPad(i) {
       // todo ?
+    },
+    async onPadTransforms(padTransforms) {
+      await this.playerState.set({ padTransforms });
     },
     onSliderValueChanged(i, val) {
       switch (i) {

@@ -8,13 +8,7 @@ import compile from 'template-literal';
 import pluginPlatformFactory from '@soundworks/plugin-platform/server';
 import pluginAudioBufferLoaderFactory from '@soundworks/plugin-audio-buffer-loader/server';
 
-import globals from './schemas/globals';
-import game1 from './schemas/game1';
-import game2 from './schemas/game2';
-import game3 from './schemas/game3';
-import game4 from './schemas/game4';
-import game5 from './schemas/game5';
-import player from './schemas/player';
+import schemas from './schemas';
 
 import PlayerExperience from './PlayerExperience.js';
 import ControllerExperience from './ControllerExperience.js';
@@ -67,22 +61,15 @@ server.pluginManager.register('platform', pluginPlatformFactory, {}, []);
 // register schemas
 // -------------------------------------------------------------------
 // server.stateManager.registerSchema(name, schema);
-server.stateManager.registerSchema('globals', globals);
-server.stateManager.registerSchema('game1', game1);
-server.stateManager.registerSchema('game2', game2);
-server.stateManager.registerSchema('game3', game3);
-server.stateManager.registerSchema('game4', game4);
-server.stateManager.registerSchema('game5', game5);
-server.stateManager.registerSchema('player', player); // created client side
+Object.keys(schemas).forEach(s => {
+  server.stateManager.registerSchema(s, schemas[s]);
+});
 
 (async function launch() {
   try {
-    await server.stateManager.create('globals');
-    await server.stateManager.create('game1');
-    await server.stateManager.create('game2');
-    await server.stateManager.create('game3');
-    await server.stateManager.create('game4');
-    await server.stateManager.create('game5');
+    Object.keys(schemas).forEach(async s => {
+      await server.stateManager.create(s);
+    });
 
     // @todo - check how this behaves with a node client...
     await server.init(config, (clientType, config, httpRequest) => {

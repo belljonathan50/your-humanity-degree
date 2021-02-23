@@ -18,5 +18,21 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      playerState: this.$experience.playerState,
+    };
+  },
+  // todo : reset score here
+  async mounted() {
+    const schema = this.playerState.getSchema();
+
+    await this.playerState.set({
+      totalScore: schema.totalScore.default,
+      minScore: schema.minScore.default,
+      maxScore: schema.maxScore.default,
+    });
+  },
+};
 </script>

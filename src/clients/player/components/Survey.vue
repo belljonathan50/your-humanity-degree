@@ -24,10 +24,11 @@
 
 <script>
 export default {
-  props: ['data'],
+  props: [ 'data', 'offset' ],
   data() {
     return {
-      show: 0,
+      // show: 0,
+      currentItem: 0,
     };
   },
   computed: {
@@ -41,6 +42,9 @@ export default {
         });
       });
       return res;
+    },
+    show() {
+      return (this.currentItem + this.offset) % this.data.length;
     },
   },
   async mounted() {
@@ -64,7 +68,11 @@ export default {
 
       const transDur = document.body.style.getPropertyValue('--survey-transition-duration');
 
-      if (score === min) {
+      if (min === max || (score !== min && score !== max)) {
+        this.$refs.survey.style.setProperty('--transition-duration', transDur);
+        this.$refs.survey.style.setProperty('--fg-color', 'white');
+        this.$refs.survey.style.setProperty('--bg-color', 'black');
+      } else  if (score === min) {
         this.$refs.survey.style.setProperty('--transition-duration', 0);
         this.$refs.survey.style.setProperty('--fg-color', 'white');
         this.$refs.survey.style.setProperty('--bg-color', 'black');
@@ -81,14 +89,11 @@ export default {
         this.$refs.survey.style.setProperty('--transition-duration', transDur);
         this.$refs.survey.style.setProperty('--fg-color', fontColor);
         this.$refs.survey.style.setProperty('--bg-color', `hsl(${hue}, 100%, 50%)`);        
-      } else {
-        this.$refs.survey.style.setProperty('--transition-duration', transDur);
-        this.$refs.survey.style.setProperty('--fg-color', 'white');
-        this.$refs.survey.style.setProperty('--bg-color', 'black');
       }
 
       setTimeout(() => {
-        this.show++;
+        // this.currentItem++;
+        this.currentItem = (this.currentItem + 1) % this.data.length;
       }, 500);
     },
   },

@@ -4,7 +4,7 @@
       background-color: #ccc;
     ">
     <template v-for="(page, i) in pages">
-      <div
+      <div v-if="page !== 'loader'"
         :style="`
           display: inline-block;
           ${i !== 0 ? 'border-left: 1px solid #ccc;' : ''}

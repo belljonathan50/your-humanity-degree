@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="flex-grow-shrink flex-container" style="flex-basis: 50%;">
-      <div class="title"> Game 5 </div>
+      <div class="title">
+        <!-- put something here -->
+      </div>
       <div class="subtitle">
         <!-- put something here -->
       </div>
@@ -32,7 +34,9 @@
       </div>
     </div>
 
-    <div class="flex-grow-shrink" style="flex-basis: 50%;"></div>
+    <div class="flex-grow-shrink" style="flex-basis: 50%;">
+      <!-- put something here -->
+    </div>
   </div>
 </template>
 
@@ -48,21 +52,18 @@ export default {
     return {
       columns: 9,
       rows: 9,
-      gameState: this.$experience.states.game5,
+      gameState: this.$experience.gameState,
       playerState: this.$experience.playerState,
       words: [],
-      padSampleSet: 0,
+      sampleSetIndex: 0,
       enabledPads: [],
       disabledPads: [], // this one is a PadSurface prop !!! (todo : decouple ?)
-      wordSampleSet: 0,
+      unsubscribe: () => {},
     };
   },
   computed: {
     padSamples() {
-      return samples.game2.pads[this.padSampleSet];
-    },
-    wordSamples() {
-      return samples.game5.words[this.wordSampleSet];
+      return samples.puzzle1.pads[this.sampleSetIndex];
     },
   },
   created() {
@@ -80,27 +81,43 @@ export default {
     }
   },
   mounted() {
-    this.gameState.subscribe(updates => {
-      if (updates.hasOwnProperty('padSampleSet')) {
-        this.padSampleSet = updates.padSampleSet;
+    this.unsubscribe = this.gameState.subscribe(updates => {
+      if (updates.hasOwnProperty('puzzle1SampleSet')) {
+        this.sampleSetIndex = updates.puzzle1SampleSet;
       }
-
-      // if (updates.hasOwnProperty('wordSampleSet')) {
-      //   this.wordSampleSet = updates.wordSampleSet;
-      // }      
     });
 
-    // const { padSampleSet, wordSampleSet } = this.gameState.getValues();
-    const { padSampleSet } = this.gameState.getValues();
-    this.padSampleSet = padSampleSet;
+    const { puzzle1SampleSet } = this.gameState.getValues();
+    this.sampleSetIndex = puzzle1SampleSet;
     // this.wordSampleSet = wordSampleSet;
+  },
+  beforeDestroy() {
+    this.unsubscribe();
   },
   methods: {
     onClickPad(i) {
-      // first compute min and max score here according to visible words' scores
-
       this.enabledPads.splice(this.enabledPads.indexOf(i), 1)[0];
       const w = this.words[i];
+
+      // update player state variables according to visible words :
+
+      let min = w.score;
+      let max = w.score;
+      this.enabledPads.forEach(index => {
+        const word = this.words[index];
+        if (word.score < min) min = word.score;
+        if (word.score > max) max = word.score;
+      });
+
+      let { totalScore, minScore, maxScore } = this.playerState.getValues();
+
+      totalScore += w.score;
+      minScore += min;
+      maxScore += max;
+
+      this.playerState.set({ totalScore, minScore, maxScore });
+
+      // update pad enablement / disablement propagation according to score
 
       if (w.score < 0) {
         const nbPadsToEnable = Math.min(this.disabledPads.length, Math.floor(Math.random() * 2) + 1);

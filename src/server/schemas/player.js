@@ -2,6 +2,10 @@
 // it will make state updates fail silently :/
 
 export default {
+  started: {
+    type: 'boolean',
+    default: false,
+  },
   totalScore: {
     type: 'integer',
     min: -1e9,
@@ -21,6 +25,10 @@ export default {
     default: 0,
   },
   disabledPads: {
+    type: 'any',
+    default: [],
+  },
+  padTransforms: {
     type: 'any',
     default: [],
   },

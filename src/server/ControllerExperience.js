@@ -9,14 +9,14 @@ class ControllerExperience extends AbstractExperience {
 
   async start() {
     super.start();
-    const globals = await this.server.stateManager.attach('globals');
-    globals.subscribe(updates => {
-
-      // console.log(updates)
-      if (updates.liveMode) {
-        // do what is necessary here when live mode is toggled
+    const liveModeState = await this.server.stateManager.attach('liveMode');
+    /*
+    liveModeState.subscribe(updates => {
+      if (updates.hasOwnProperty('liveMode')) {
+        this.server.sockets.broadcast(null, this, 'liveMode', updates.liveMode);
       }
     });
+    //*/
   }
 
   enter(client) {

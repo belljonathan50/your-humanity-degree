@@ -63,14 +63,15 @@ export default {
   components: { Tabs },
   data() {
     return {
-      state: this.$experience.states.globals,
+      liveModeState: this.$experience.liveModeState,
+      globalState: this.$experience.globalState,
+      gameState: this.$experience.gameState,
       pages: [],
       currentPage: null,
       liveMode: false,
       blinkingCursor: '<strong class="blinking-cursor">_</strong>',
       toastMessage: '',
-      // toastDisplayDuration: 500,
-      // toastTimeout: null,
+      unsubscriptions: [],
     };
   },
   watch: {
@@ -79,78 +80,47 @@ export default {
     },
   },
   async mounted() {
-    const schema = this.state.getSchema();
     const controls = {};
-
-    /*
-    controls.toastTimeout = new controllers.Slider({
-      label: 'Message timeout',
-      min: 500,
-      max: 5000,
-      step: 1,
-      default: this.toastDisplayDuration,
-      container: '#toast-controller',
-      callback: value => {
-        this.toastDisplayDuration = value;
-      },
-    });
-
-    controls.toastDisplay = new controllers.TriggerButtons({
-      label: 'Display message',
-      options: ['display'],
-      container: '#toast-controller',
-      callback: async () => {
-        if (this.toastTimeout !== null) {
-          clearTimeout(this.toastTimeout);
-          this.toastTimeout = null;
-        }
-
-        console.log(this.$refs.textarea.value);
-        await this.state.set({
-          showToast: true,
-          toastMessage: this.$refs.textarea.value,
-        });
-        this.toastTimeout = setTimeout(async () => {
-          await this.state.set({
-            showToast: false,
-          });
-        }, this.toastDisplayDuration);
-      },
-    });
-    //*/
 
     controls.toastToggle = new controllers.Toggle({
       label: 'Toast on/off',
       default: false,
       container: '#toast-controller',
       callback: async value => {
-        await this.state.set({ showToast: value });
+        await this.globalState.set({ showToast: value });
       },
     });
 
-    this.state.subscribe(async updates => {
+    const unsubscribeGameState = this.gameState.subscribe(async updates => {
       if (updates.hasOwnProperty('currentPage')) {
         this.currentPage = updates.currentPage;
       }
+    });
 
+    const unsubscribeLiveModeState = this.liveModeState.subscribe(async updates => {
       if (updates.hasOwnProperty('liveMode')) {
         this.liveMode = updates.liveMode;
       }
     });
 
-    this.pages = this.state.getSchema().currentPage.list;
-    const { currentPage, liveMode } = this.state.getValues();
-    this.currentPage = currentPage;
-    this.liveMode = liveMode;
-    await this.state.set({ showToast: false, toastMessage: this.blinkingCursor });
+    this.unsubscriptions = [ unsubscribeGameState, unsubscribeLiveModeState ];
+
+    this.pages = this.gameState.getSchema().currentPage.list;
+    this.liveMode = this.liveModeState.getValues().liveMode;
+    this.currentPage = this.gameState.getValues().currentPage;
+
+    await this.globalState.set({ toastMessage: this.blinkingCursor });
+  },
+  beforeDestroy() {
+    this.unsubscriptions.forEach(unsubscribe => { unsubscribe(); });
   },
   methods: {
     async onClickTab(tab) {
-      await this.state.set({ currentPage: tab }); 
+      await this.gameState.set({ currentPage: tab }); 
     },
     async onModeChange(e) {
       const liveMode = e.target.checked;
-      await this.state.set({ liveMode });
+      await this.liveModeState.set({ liveMode });
     },
     async onMessageChange(newValue) {
       // neat solution found here :
@@ -167,8 +137,8 @@ export default {
       });
       arr[arr.length - 1]
       const toastMessage = `${arr.join('<br>')}`;//${this.blinkingCursor}`;
-      console.log(toastMessage);
-      await this.state.set({ toastMessage });
+      // console.log(toastMessage);
+      await this.globalState.set({ toastMessage });
     },
   },
 };

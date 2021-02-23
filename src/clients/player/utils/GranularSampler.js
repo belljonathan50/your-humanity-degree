@@ -22,7 +22,7 @@ class GranularSampler {
 
   set buffer(buffer) {
     this.engine.buffer = buffer;
-    this.duration = buffer.duration;
+    this.duration = buffer ? buffer.duration : 0;
     this._updatePosition();
   }
 

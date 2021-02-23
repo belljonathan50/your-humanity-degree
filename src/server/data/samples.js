@@ -1,36 +1,14 @@
 const samples = {
-  game1: {
-    background: [
-      [
-        'typing/typ3',
-      ],
-    ],
-    triggers: [
-      [
-        'quick/quick1',
-        'quick/quick2',
-        'quick/quick3',
-        'quick/quick4',
-        'quick/quick5',
-        'quick/quick6',
-      ],
-      [
-        'quick/quick7',
-        'quick/quick8',
-        'quick/quick9',
-        'quick/quick10',
-        'quick/quick11',
-        'quick/quick12',
-      ],
-    ],
+  survey1: {
     answers: [{
       // answers sample set 1
       good: [
         'quick/quick26',
       ],
       neutral: [
-        'others/new scene2',
-        'others/new scene5',
+        'quick/quick7',
+        // 'others/new scene2',
+        // 'others/new scene5',
         // 'others/trumpet',
         // 'others/trumpet2',
         // 'others/trumpet3',
@@ -39,14 +17,15 @@ const samples = {
         // 'words/words2',
         'words/words3',
       ],
-    }, {
+    },
+    {
       // answers sample set 2
       good: [
         'words/words23',
       ],
       neutral: [
         'words/words22',
-        'quick/quick7',
+        // 'quick/quick7',
         // 'others/trumpet',
         // 'others/trumpet2',
         // 'others/trumpet3',
@@ -59,7 +38,7 @@ const samples = {
     }],
   },
   // pads without background image and with flying words
-  game2: {
+  flyingWords1: {
     pads: [
       [
         'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
@@ -76,64 +55,101 @@ const samples = {
         'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
       ],
     ],
-    words: [
+    granular: [
       [
-        'words/words1',
-        'words/words2',
+        // 'slider/down1',
+        // 'slider/down2',
+        // 'slider/down5',
+        // 'slider/down6',
+        // 'slider/down7',
+        // 'slider/down8',
+        // 'slider/down9',
+        // 'slider/down10',
+        // 'slider/down11',
+        // 'slider/down20',
+        // 'slider/down21',      
+      ],
+    ],
+  },
+  // same as flyingWords1 with sliders overlay
+  flyingWords2: {
+    pads: [
+      [],
+    ],
+    granular: [
+      [
+        'slider/granular-fw-2-01',
+        'slider/granular-fw-2-02',
+      ],
+    ],
+  },
+  survey2: {
+    answers: [{
+      good: [
+        'quick/quick26',
+      ],
+      neutral: [
+        'quick/quick7',
+      ],
+      bad: [
         'words/words3',
-        'words/words4',
-        'words/words5',
-        'words/words6',
       ],
-      [
-        'words/words7',
-        'words/words8',
-        'words/words9',
-        'words/words10',
-        'words/words12',
-        'words/words13',
+    },
+    {
+      good: [
+        'words/words23',
       ],
-    ],
-  },
-  // same as game2 with sliders overlay
-  game3: {
-    pads: [
-
-    ],
-    words: [
-
-    ],
-    sliders: [
-      [
-        'slider/down1',
-        'slider/down2',
-        'slider/down5',
-        'slider/down6',
-        'slider/down7',
-        'slider/down8',
-        'slider/down9',
-        'slider/down10',
-        'slider/down11',
-        'slider/down20',
-        'slider/down21',
+      neutral: [
+        'words/words22',
       ],
-    ],
-  },
-  // second survey :
-  // same as first survey
-  game4: {
-    background: [
-
-    ],
-    triggers: [
-
-    ],
+      bad: [
+        'words/words2',
+      ],
+    }],
   },
   // pads with beethoven background image and one fix word per pad
-  game5: {
+  puzzle1: {
     pads: [
-      // todo
+      [],
     ],
+  },
+  flyingWords3: {
+    pads: [
+      [],
+    ],
+    granular: [
+      [
+        'slider/granular-fw-3-01',
+        'slider/granular-fw-3-02',
+      ],
+    ],    
+  },
+  survey3: {
+    answers: [{
+      good: [
+        'quick/quick26',
+      ],
+      neutral: [
+        'quick/quick7',
+      ],
+      bad: [
+        'words/words3',
+      ],
+    },
+    {
+      good: [
+        'words/words23',
+      ],
+      neutral: [
+        'words/words22',
+      ],
+      bad: [
+        'words/words2',
+      ],
+    }],
+  },
+  end: {
+
   },
 };
 
@@ -154,17 +170,6 @@ const files = {};
     files[obj] = `sounds/${obj}.mp3`;
   }
 })(samples);
-
-// Object.keys(samples).forEach(game => {
-//   const gameSamples = samples[game];
-//   Object.keys(gameSamples).forEach(category => {
-//     gameSamples[category].forEach(sampleSet => {
-//       sampleSet.forEach(sample => {
-//         files[sample] = `sounds/${sample}.mp3`;
-//       });
-//     });
-//   });
-// });
 
 export {
   samples,

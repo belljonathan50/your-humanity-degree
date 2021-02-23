@@ -69,6 +69,7 @@ export default {
     'rows',
     'disableTouchEvents',
     'disableTouchMove',
+    'defaultPadTransforms',
     'disablePadAnimations',
     'disabledPads',
     'padSamples',
@@ -145,6 +146,13 @@ export default {
       });
       this.padAnimators.push(new PadAnimator());
     }
+
+    if (Array.isArray(this.defaultPadTransforms)) {
+      // console.log(this.defaultPadTransforms);
+      this.defaultPadTransforms.forEach((transform, i) => {
+        this.padTransforms[i] = transform;
+      });
+    }    
   },
   mounted() {
     document.body.addEventListener('touchstart', this.onTouchStart);
@@ -163,6 +171,8 @@ export default {
 
     window.cancelAnimationFrame(this.rafId);
     this.rafId = null;
+
+    // this.$emit('padTransforms', this.padTransforms);
   },
   methods: {
     play(padIndex) {
@@ -186,7 +196,11 @@ export default {
         if (animator.update(this.padTransforms[i])) { moved = true; }
       });
 
-      if (moved) { this.padTransforms = [...this.padTransforms]; }
+      if (moved) {
+        this.padTransforms = [...this.padTransforms];
+        this.$emit('padTransforms', this.padTransforms);
+      }
+
       this.rafId = window.requestAnimationFrame(this.updateAnimationFrame);
     },
     onTouchStart(e) {
@@ -228,7 +242,7 @@ export default {
             this.play(i);
             
             if (!this.disablePadAnimations) {
-              setTImeout(() => {
+              setTimeout(() => {
                 this.padAnimators[i].start(this.padTransforms[i]);
               }, 100);
             }
