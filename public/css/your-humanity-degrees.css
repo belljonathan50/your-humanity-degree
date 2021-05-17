@@ -3,7 +3,8 @@
   --survey-fg-color: white;
   --survey-bg-color: black;
   --survey-transition-duration: .5s;
-  --flying-words-font-size: 1.5em;
+  --instruction-font-size: 1.5em;
+  --flying-word-font-size: 1.5em;
 
   --pads-fill-color: black;
   --pads-nofill-color: transparent;
@@ -34,6 +35,7 @@ html {
 
 html, body {
   overflow: hidden;
+  text-align: justify;
 }
 
 body.blink {
@@ -119,6 +121,11 @@ div.subtitle {
   text-align: center;
 }
 
+div.instruction {
+  font-size: var(--instruction-font-size);
+  text-align: center;
+}
+
 div.flex {
   flex: 0 1 auto;
 }
@@ -134,7 +141,7 @@ div.scrolly {
   overflow-y: scroll;
 }
 
-/* * * * * * * * * * TOAST * * * * * * * * */
+/** * * * * * * * * * * * * * * * * * TOAST * * * * * * * * * * * * * * * * * */
 
 .toast {
   position: absolute;
@@ -163,7 +170,7 @@ div.scrolly {
   transition: opacity .5s, visibility .5s;
 }
 
-/* * * * * * * * * * SURVEY * * * * * * * * */
+/* * * * * * * * * * * * * * * * * * SURVEY * * * * * * * * * * * * * * * * * */
 
 .survey-wrapper {
   width: 100%;
@@ -218,6 +225,7 @@ div.scrolly {
 
 .survey .item .question {
   padding: 0.5em 0;
+  text-align: justify;
 }
 
 .survey .item .answers {}
@@ -226,13 +234,14 @@ div.scrolly {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.25em 0;
+  padding: 0.3em 0;
 }
 
 .survey .item .answers .answer label {
   /*font-size: 1.2em;*/
   padding: 0.4em;
   /*margin-left: 0.5em;*/
+  flex: 1 0 auto;
 }
 
 input[type="radio"] {
@@ -245,6 +254,7 @@ input[type="radio"] {
 
 div.input-radio-substitute {
   position: absolute;
+  pointer-events: none;
   width: 2em;
   height: 2em;
   background-color: transparent;
@@ -278,7 +288,7 @@ input[type="radio"]:checked + div.input-radio-substitute:after {
   transition: background-color var(--survey-transition-duration);
 }
 
-/* * * * * * * * FLYING WORDS * * * * * * * */
+/* * * * * * * * * * * * * * * * FLYING WORDS * * * * * * * * * * * * * * * * */
 
 div.flying-words {
   position: absolute;
@@ -295,7 +305,7 @@ div.flying-word {
   position: absolute;
   top: 100%;
   text-align: center;
-  font-size: var(--flying-words-font-size);
+  font-size: var(--flying-word-font-size);
   pointer-events: auto;
 
   opacity: 1;
