@@ -11,13 +11,13 @@ export default {
     const schema = state.getSchema();
     const controls = {};
 
-    controls.survey2SampleSet = new controllers.SelectButtons({
+    controls.surveySampleSet = new controllers.SelectList({
       label: 'answer sample set',
-      options: schema.survey2SampleSet.list,
-      default: schema.survey2SampleSet.default,
+      options: schema.surveySampleSet.list,
+      default: schema.surveySampleSet.default,
       container: '#controller-survey-2',
       callback: value => {
-        state.set({ survey2SampleSet: value });
+        state.set({ surveySampleSet: value });
       },
     });
 

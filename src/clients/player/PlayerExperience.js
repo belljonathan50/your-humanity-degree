@@ -12,6 +12,7 @@ class PlayerExperience extends AbstractExperience {
     this.config = config;
     this.$container = $container;
     this.audio = audio;
+    this.scorePlayer = null;
     this.rafId = null;
     console.log(navigator.userAgent);
 

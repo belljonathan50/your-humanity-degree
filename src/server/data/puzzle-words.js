@@ -1,0 +1,26 @@
+const puzzleWords = [
+  { text: 'Sound', score: 1 },
+  { text: 'artist', score: 1 },
+  { text: 'tondicht', score: 1 },
+  { text: 'hero', score: 1 },
+  { text: 'popular', score: 1 },
+  { text: 'myth', score: 1 },
+  { text: 'nature', score: 1 },
+  { text: 'freedom', score: 1 },
+  { text: 'German', score: 1 },
+  { text: 'spirit', score: 1 },
+  { text: 'Freiheit', score: 1 },
+  { text: 'Freude', score: 1 },
+  { text: 'human', score: 1 },
+  { text: 'B', score: -1 },
+  { text: 'E', score: -1 },
+  { text: 'E', score: -1 },
+  { text: 'T', score: -1 },
+  { text: 'H', score: -1 },
+  { text: 'O', score: -1 },
+  { text: 'V', score: -1 },
+  { text: 'E', score: -1 },
+  { text: 'N', score: -1 },
+];
+
+export default puzzleWords;

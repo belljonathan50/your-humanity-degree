@@ -1,19 +1,16 @@
 <template>
   <div v-bind:class="{ shit: blinking }">
     <div class="flex-grow-shrink flex-container" style="flex-basis: 50%;">
-      <!-- <div class="title"> -->
-        <!-- Game 2 -->
-      <!-- </div> -->
-      <div style="text-align: center; font-size: var(--flying-words-font-size);">
+      <div class="instruction">
+
         <template v-if="showSliders">
           Play the sliders
         </template>
 
         <template v-else>
-          Click the words
-          <br>
-          that describe you
+          Click the words <br> that describe you
         </template>
+
       </div>
     </div>
 
@@ -28,7 +25,7 @@
             @change="onSliderValueChanged"
           />
         </div>
-        <flying-words
+        <flying-words-component
           :words="words"
           :negativeWordsPercentage="negativeWordsPercentage"
           :widthHeightRatio="columns / rows"
@@ -58,10 +55,9 @@
 </template>
 
 <script>
-import { samples } from '../../../server/data/samples';
-import words from '../../../server/data/flying-words';
+import { samples, flyingWords } from '../../../server/data';
 import GranularChain from '../utils/GranularChain';
-import FlyingWords from '../components/FlyingWords.vue';
+import FlyingWordsComponent from '../components/FlyingWords.vue';
 import PadSurface from '../components/PadSurface.vue';
 import MultiSlider from '../components/MultiSlider.vue';
 
@@ -70,22 +66,18 @@ import MultiSlider from '../components/MultiSlider.vue';
 const granularChain = new GranularChain(null, 1000);
 
 export default {
-  components: { FlyingWords, PadSurface, MultiSlider },
-  props: [
-    'padSampleSets',
-    'granularSampleSets',
-    'padSampleSetStateId',
-    'granularSampleSetStateId'
-  ],
+  components: { FlyingWordsComponent, PadSurface, MultiSlider },
   data() {
     return {
       columns: 5,
       rows: 5,
-      words,
+      words: flyingWords,
       gameState: this.$experience.gameState,
       playerState: this.$experience.playerState,
+      padSampleSets: samples.flyingWords.pads,
       padSampleSetIndex: 0,
       padTransforms: [],
+      granularSampleSets: samples.flyingWords.granular,
       granularSampleSetIndex: 0,
       showSliders: false,
       negativeWordsPercentage: 0,
@@ -100,6 +92,7 @@ export default {
     },
     sliderBuffer() {
       const arr = this.granularSampleSets[this.granularSampleSetIndex];
+      // pick a random sample in the sample set array
       const sample = arr[Math.floor(Math.random() * (arr.length))];
       return this.$experience.audioBufferLoader.data[sample];
     }
@@ -109,10 +102,8 @@ export default {
       if (updates.hasOwnProperty('flyingWordsShowSliders')) {
         this.showSliders = updates.flyingWordsShowSliders;
         if (this.showSliders) {
-          // console.log('starting');
           granularChain.start();
         } else {
-          // console.log('stopping');
           granularChain.stop();
         }
       }
@@ -121,32 +112,33 @@ export default {
         this.negativeWordsPercentage = updates.flyingWordsNegativeWordsPercentage;
       }
 
-      if (updates.hasOwnProperty(this.padSampleSetStateId)) {
-        this.padSampleSetIndex = updates[this.padSampleSetStateId];
+      //*
+      if (updates.hasOwnProperty('flyingWordsPadSampleSet')) {
+        this.padSampleSetIndex = updates.flyingWordsPadSampleSet;
       }
 
-      if (updates.hasOwnProperty(this.granularSampleSetStateId)) {
-        this.granularSampleSetIndex = updates[this.granularSampleSetStateId];
+      if (updates.hasOwnProperty('flyingWordsGranularSampleSet')) {
+        this.granularSampleSetIndex = updates.flyingWordsGranularSampleSet;
       }
+      //*/
     });
 
-    console.log(this.sliderBuffer);
     granularChain.buffer = this.sliderBuffer;
     granularChain.setGranular(0);
     granularChain.setFilter(0);
     granularChain.setDistortion(0);
 
-    const gameStateValues = this.gameState.getValues();
-
     const {
       flyingWordsShowSliders,
-      flyingWordsNegativeWordsPercentage
-    } = gameStateValues;
+      flyingWordsNegativeWordsPercentage,
+      flyingWordsPadSampleSet,
+      flyingWordsGranularSampleSet,
+    } = this.gameState.getValues();;
 
     this.showSliders = flyingWordsShowSliders;
     this.negativeWordsPercentage = flyingWordsNegativeWordsPercentage;
-    this.padSampleSetIndex = gameStateValues[this.padSampleSetStateId];
-    this.granularSampleSetIndex = gameStateValues[this.granularSampleSetStateId];
+    this.padSampleSetIndex = flyingWordsPadSampleSet;
+    this.granularSampleSetIndex = flyingWordsGranularSampleSet;
 
     ////////// SCORE STUFF :
 
@@ -180,7 +172,7 @@ export default {
 
     await this.playerState.set({
       disabledPads,
-      unselectedFlyingWords: words,
+      unselectedFlyingWords: flyingWords,
     });
   },
   mounted() {

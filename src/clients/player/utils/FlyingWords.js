@@ -15,36 +15,26 @@ class FlyingWords extends EventEmitter {
     this.rect = {
       left: this.w * -0.1,
       right: this.w * 1.1,
-      top: this.h * -0.1,
-      bottom: this.h * 1.1,
+      top: this.h * -0.15,
+      bottom: this.h * 1.15,
     };
+
+    this.negativeWordsProba = 0.5;
 
     this.activeWords = [];
     this.inactiveWords = [];
     this.disabledWords = [];
-    this.forbiddenWords = [];
-
-    this.negativeWords = [];
-    this.positiveWords = [];
 
     words.forEach((w, i) => {
       this.inactiveWords.push({
-        // text: w.text,
+        // text: w.text, score: w.score,
         ...w,
         x: 0,
         y: 0,
         vy: 0,
         phase: 0,
         speed: 0,
-        transitioning: false,
-        transitionStartDate: 0,
       });
-
-      if (w.score < 0) {
-        this.negativeWords.push({...w});
-      } else if (w.score > 0) {
-        this.positiveWords.push({...w});
-      }
     });
 
     this.transitionDuration = 1000;
@@ -80,26 +70,7 @@ class FlyingWords extends EventEmitter {
   }
 
   setNegativeWordsPercentage(val) {
-    this.forbiddenWords = [];
-    let nbWordsToForbid = 0;
-    let wordsToForbid = [];
-
-    if (val < 50) { // we must only forbid negative words
-      nbWordsToForbid = ((val / 50)) * (this.negativeWords.length + 0.5);
-      nbWordsToForbid = Math.floor(nbWordsToForbid);
-      nbWordsToForbid = this.negativeWords.length - nbWordsToForbid;
-      wordsToForbid = [...this.negativeWords];
-    } else { // we must only forbid positive words
-      nbWordsToForbid = ((100 - val) / 50) * (this.positiveWords.length + 0.5);
-      nbWordsToForbid = Math.floor(nbWordsToForbid);
-      nbWordsToForbid = this.positiveWords.length - nbWordsToForbid;
-      wordsToForbid = [...this.positiveWords];
-    }
-
-    for (let i = 0; i < nbWordsToForbid; i++) {
-      const randIndex = Math.floor(Math.random() * wordsToForbid.length);
-      this.forbiddenWords.push(wordsToForbid.splice(randIndex, 1)[0].text);
-    }
+    this.negativeWordsProba = val * 0.01;
   }
 
   getDisplayedWords() {
@@ -118,17 +89,6 @@ class FlyingWords extends EventEmitter {
       if (this.activeWords[i].text === word.text) {
         const w = this.activeWords.splice(i, 1)[0];
         this.disabledWords.push(w);
-
-        // sometimes css transition does not work (maybe because of pads overlay)
-        // so we add this (magical) timeout :
-        // (EDIT: neither works so we do it via javascript in update function)
-
-        // setTimeout(() => {
-        //   elements[word.text].classList.add('selected');
-        // }, 100);
-
-        // w.transitioning = true;
-        // w.transitionStartDate = Date.now();
         this.emit('disabled', w.text, true);
         break;
       }
@@ -137,14 +97,11 @@ class FlyingWords extends EventEmitter {
 
   enableWord(word, elements) {
     for (let i = 0; i < this.disabledWords.length; i++) {
-      // console.log(word.text);
-      //*
       if (this.disabledWords[i].text === word.text) {
         const w = this.disabledWords.splice(i, 1)[0];
         this.inactiveWords.push(w);
         break;
       }
-      //*/
     }
   }
 
@@ -154,17 +111,29 @@ class FlyingWords extends EventEmitter {
     const dt = (this.lastUpdate - now) * 0.001;
     this.lastUpdate = now;
 
+
     if (now >= this.nextActivationDate && this.inactiveWords.length > 0) {
-      // we iterate until we find an "authorized" word to activate :
+      // first choose if we must pick a positive or a negative word :
+      let pickNegative = null;
+      if (this.negativeWordsProba === 0) {
+        pickNegative = false;
+      } else if (this.negativeWordsProba === 1) {
+        pickNegative = true;
+      } else {
+        const r = Math.floor(Math.random() * 1001) / 1000;
+        pickNegative = r < this.negativeWordsProba;
+      }
+      
+      // then pick the word :
       for (let i = 0; i < this.inactiveWords.length; i++) {
-        if (this.forbiddenWords.indexOf(this.inactiveWords[i].text) === -1) {
-          const w = this.inactiveWords.splice(i, 1)[0];
+        const { score } = this.inactiveWords[i];
+        if ((pickNegative && score < 0) || (!pickNegative && score >= 0)) {
+          const w = this.inactiveWords.splice(i, 1)[0];          
           this.activeWords.push(w);
           this.initFlyingWord(w);
-          // this.transitioning = false;
-          // elements[w.text].style.opacity = 1;
           this.emit('disabled', w.text, false);
           this.nextActivationDate = now + this.random(minInterval, maxInterval) * 1000;
+          break;
         }
       }
     }
@@ -176,7 +145,6 @@ class FlyingWords extends EventEmitter {
       if (w.y < this.rect.top) {
         this.activeWords.splice(i, 1)[0];
         this.inactiveWords.push(w);
-        // elements[w.text].style.opacity = 0;
       } else {
         w.phase += w.speed * dt;
         w.phase -= Math.floor(w.phase); // clip to [0,1]
@@ -185,22 +153,6 @@ class FlyingWords extends EventEmitter {
         elements[w.text].style.top = `${w.y}%`;
       }
     }
-
-    // this replaces the buggy css transition on opacity :
-    /*
-    for (let i = 0; i < this.disabledWords.length; i++) {
-      const w = this.disabledWords[i];
-      if (w.transitioning) {
-        const frac = (now - w.transitionStartDate) / this.transitionDuration;
-        if (frac > 1) {
-          elements[w.text].style.opacity = 0;
-          w.transitioning = false;
-        } else {
-          elements[w.text].style.opacity = 1 - frac;
-        }
-      }
-    }
-    */
   }
 };
 

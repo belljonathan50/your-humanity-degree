@@ -1,6 +1,18 @@
 <template>
   <div class="survey" ref="survey">
-    <div v-for="(item, i) in data">
+    <div
+      style="
+        position: absolute;
+        width: 100%;
+        padding: 10%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
+      <div class="instruction" v-html="title"></div>
+    </div>
+
+    <div v-for="(item, i) in data" class="flex-grow-noshrink">
       <transition name="slide">
         <div class="item-wrapper" v-if="show === i">
           <div class="item">
@@ -24,7 +36,7 @@
 
 <script>
 export default {
-  props: [ 'data', 'offset' ],
+  props: [ 'title', 'data', 'offset' ],
   data() {
     return {
       // show: 0,

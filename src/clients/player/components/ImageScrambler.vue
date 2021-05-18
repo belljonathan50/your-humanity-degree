@@ -52,20 +52,16 @@ export default {
 
       for (let i = 0; i < length; i++) {
         normalIndices.push(i);
-        // this.indices.push(i);
       }
 
-      //*
       for (let i = 0; i < length; i++) {
         const randomIndex = Math.floor(Math.random() * normalIndices.length);
         this.indices.push(normalIndices.splice(randomIndex, 1)[0]);
       }
-      //*/
     },
     coordsFromIndex(i) {
       const r = Math.floor(i / this.columns);
       const k = i % this.columns;
-      // console.log(i, r, k);
       return { r, k };
     },
   },

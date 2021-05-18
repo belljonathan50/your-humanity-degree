@@ -3,8 +3,13 @@ class SimpleSampler {
     this.ctx = ctx;
     this.playing = false;
     this.src = null;
+    this.gain = 1;
     this.vol = ctx.createGain();
     this.vol.connect(dst || ctx.destination);
+  }
+
+  setGain(gain) {
+    this.gain = gain;
   }
 
   play(buffer, bufferOffset = 0) {
@@ -16,7 +21,7 @@ class SimpleSampler {
     this.src = this.ctx.createBufferSource();
     this.src.buffer = buffer;
     this.src.connect(this.vol);
-    this.vol.gain.setValueAtTime(1, now);
+    this.vol.gain.setValueAtTime(this.gain, now);
 
     this.src.addEventListener('ended', () => { this.playing = false; });
     this.src.start(now, bufferOffset, duration);

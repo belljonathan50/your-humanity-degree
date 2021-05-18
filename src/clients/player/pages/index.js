@@ -1,24 +1,32 @@
 import Vue from 'vue';
 import Loader from './Loader.vue';
 import Welcome from './Welcome.vue';
-import Survey1 from './Survey1.vue';
-import Survey2 from './Survey2.vue';
-import Survey3 from './Survey3.vue';
-import FlyingWords1 from './FlyingWords1.vue';
-import FlyingWords2 from './FlyingWords2.vue';
-import FlyingWords3 from './FlyingWords3.vue';
-import Puzzle1 from './Puzzle1.vue';
+import Survey from './Survey.vue';
+import FlyingWords from './FlyingWords.vue';
+import Puzzle from './Puzzle.vue';
 import End from './End.vue';
 import ThankYou from './ThankYou.vue';
 
-Vue.component('loader', Loader);
-Vue.component('welcome', Welcome);
-Vue.component('survey1', Survey1);
-Vue.component('survey2', Survey2);
-Vue.component('survey3', Survey3);
-Vue.component('flyingWords1', FlyingWords1);
-Vue.component('flyingWords2', FlyingWords2);
-Vue.component('flyingWords3', FlyingWords3);
-Vue.component('puzzle1', Puzzle1);
-Vue.component('end', End);
-Vue.component('thankyou', ThankYou);
+const pages = {
+  loader: Loader,
+  welcome: Welcome,
+  survey: Survey,
+  flyingWords: FlyingWords,
+  puzzle: Puzzle,
+  end: End,
+  thankyou: ThankYou,
+};
+
+Object.keys(pages).forEach(p => {
+  Vue.component(p, pages[p]);
+});
+
+export default pages;
+
+// Vue.component('loader', Loader);
+// Vue.component('welcome', Welcome);
+// Vue.component('survey', Survey);
+// Vue.component('flyingWords', FlyingWords);
+// Vue.component('puzzle', Puzzle);
+// Vue.component('end', End);
+// Vue.component('thankyou', ThankYou);

@@ -19,7 +19,8 @@
         Your Humanity Degree
       </div>
       <div style="flex: 0 1 auto; padding: 2rem;">
-        live mode <input type="checkbox" @change="onModeChange" v-model="liveMode"/>
+        live mode
+        <input type="checkbox" @change="onModeChange" v-model="liveMode"/>
       </div>
     </div>
     <div
@@ -29,7 +30,7 @@
         background-color: #333;
       ">
       <textarea
-        rows="10"
+        rows="5"
         style="width: 100%; resize: none;"
         v-model="toastMessage">
       </textarea>
@@ -43,12 +44,16 @@
         color: black;
         background-color: #aaa;
       ">
-      <tabs :pages="pages" :currentPage="currentPage" v-on:tab="onClickTab" />
+      <tabs
+        :pages="controllerPages"
+        :currentPage="currentControllerPage"
+        v-on:tab="onClickTab" />
       <div
         style="
           padding: 5px;
         ">
-        <component :is="currentPage" />
+        <!-- <component :is="currentControllerPage" /> -->
+        <all-controls />
       </div>
     </div>
   </div>
@@ -57,16 +62,19 @@
 <script>
 import * as controllers from '@ircam/basic-controllers';
 import Tabs from './components/Tabs.vue';
-import './pages';
+import AllControls from './pages/AllControls.vue';
+// import './pages';
 
 export default {
-  components: { Tabs },
+  components: { Tabs, AllControls },
   data() {
     return {
       liveModeState: this.$experience.liveModeState,
       globalState: this.$experience.globalState,
       gameState: this.$experience.gameState,
-      pages: [],
+      controllerState: this.$experience.controllerState,
+      controllerPages: null,//Object.keys(controllerPages),
+      currentControllerPage: null,
       currentPage: null,
       liveMode: false,
       blinkingCursor: '<strong class="blinking-cursor">_</strong>',
@@ -91,9 +99,9 @@ export default {
       },
     });
 
-    const unsubscribeGameState = this.gameState.subscribe(async updates => {
+    const unsubscribeControllerState = this.controllerState.subscribe(async updates => {
       if (updates.hasOwnProperty('currentPage')) {
-        this.currentPage = updates.currentPage;
+        this.currentControllerPage = updates.currentPage;
       }
     });
 
@@ -103,11 +111,14 @@ export default {
       }
     });
 
-    this.unsubscriptions = [ unsubscribeGameState, unsubscribeLiveModeState ];
+    this.unsubscriptions = [
+      unsubscribeControllerState,
+      unsubscribeLiveModeState,
+    ];
 
-    this.pages = this.gameState.getSchema().currentPage.list;
+    this.controllerPages = this.controllerState.getSchema().currentPage.list;
+    this.currentControllerPage = this.controllerState.getValues().currentPage;
     this.liveMode = this.liveModeState.getValues().liveMode;
-    this.currentPage = this.gameState.getValues().currentPage;
 
     await this.globalState.set({ toastMessage: this.blinkingCursor });
   },
@@ -116,7 +127,79 @@ export default {
   },
   methods: {
     async onClickTab(tab) {
-      await this.gameState.set({ currentPage: tab }); 
+      await this.controllerState.set({ currentPage: tab });
+      switch (tab) {
+        case 'welcome':
+          await this.gameState.set({
+            currentPage: 'welcome'
+          });
+          break;
+        case 'survey1':
+          await this.gameState.set({
+            currentPage: 'survey',
+            surveyData: 'survey1',
+          });
+          break;
+        case 'flyingWords1':
+          await this.gameState.set({
+            currentPage: 'flyingWords',
+            flyingWordsShowSliders: false,
+          });
+          break;
+        case 'survey2':
+          await this.gameState.set({
+            currentPage: 'survey',
+            surveyData: 'survey2',
+          });
+          break;
+        case 'flyingWords2':
+          await this.gameState.set({
+            currentPage: 'flyingWords',
+            flyingWordsShowSliders: true,
+          });
+          break;
+        case 'survey3':
+          await this.gameState.set({
+            currentPage: 'survey',
+            surveyData: 'survey3',
+          });
+          break;
+        case 'flyingWords3':
+          await this.gameState.set({
+            currentPage: 'flyingWords',
+            flyingWordsShowSliders: false,
+          });
+          break;
+        case 'survey4':
+          await this.gameState.set({
+            currentPage: 'survey',
+            surveyData: 'survey4',
+          });
+          break;
+        case 'flyingWords4':
+          await this.gameState.set({
+            currentPage: 'flyingWords',
+            flyingWordsShowSliders: true,
+          });
+          break;
+        case 'puzzle1':
+          await this.gameState.set({
+            currentPage: 'puzzle',
+          });
+          break;
+        case 'end':
+          await this.gameState.set({
+            currentPage: 'end',
+          });
+          break;
+        case 'thankyou':
+          await this.gameState.set({
+            currentPage: 'thankyou',
+          });
+          break;
+        default:
+          break;
+      }
     },
     async onModeChange(e) {
       const liveMode = e.target.checked;

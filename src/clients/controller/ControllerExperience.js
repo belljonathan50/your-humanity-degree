@@ -24,6 +24,7 @@ class ControllerExperience extends AbstractExperience {
     this.liveModeState = await this.client.stateManager.attach('liveMode');
     this.globalState = await this.client.stateManager.attach('globals');
     this.gameState = await this.client.stateManager.attach('games');
+    this.controllerState = await this.client.stateManager.attach('controller');
 
     Vue.prototype.$experience = this;
     this.vue = new Vue({

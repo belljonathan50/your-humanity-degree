@@ -1,6 +1,6 @@
 <template>
   <survey-page
-    :title="`How much <br> do you know <br> about Beethoven?`"
+    :title="`Beethoven and now`"
     :surveyData="surveyData"
     :offset="0"
     :sampleSets="sampleSets"
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import surveyData from '../../../server/data/survey1';
+import surveyData from '../../../server/data/survey4';
 import { samples } from '../../../server/data/samples';
 import SurveyPage from '../components/SurveyPage.vue';
 

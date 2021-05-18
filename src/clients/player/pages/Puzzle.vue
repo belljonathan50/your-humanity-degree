@@ -1,16 +1,12 @@
 <template>
   <div>
     <div class="flex-grow-shrink flex-container" style="flex-basis: 50%;">
-      <div class="title">
-        <!-- put something here -->
-      </div>
-      <div class="subtitle">
+      <div class="instruction">
         <!-- put something here -->
       </div>
     </div>
 
     <div class="flex-grow-noshrink">
-      <!-- <div class="pads-wrapper beethoven"> -->
       <div class="pads-wrapper">
         <image-scrambler
           :columns="columns"
@@ -41,8 +37,7 @@
 </template>
 
 <script>
-import { samples } from '../../../server/data/samples';
-import puzzleWords from '../../../server/data/puzzle-words';
+import { samples, puzzleWords } from '../../../server/data';
 import ImageScrambler from '../components/ImageScrambler.vue';
 import PadSurface from '../components/PadSurface.vue';
 
@@ -63,7 +58,7 @@ export default {
   },
   computed: {
     padSamples() {
-      return samples.puzzle1.pads[this.sampleSetIndex];
+      return samples.puzzle.pads[this.sampleSetIndex];
     },
   },
   created() {

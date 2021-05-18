@@ -1,43 +1,57 @@
 <template>
   <div>
-    <survey
+    <survey-component
       :title="title"
-      :data="surveyData"
-      :offset="offset"
+      :data="items"
+      :offset="0"
       @click="onSurveyAnswerClicked"
     />
   </div>
 </template>
 
 <script>
-import { samples } from '../../../server/data/samples';
+import { samples, surveyData } from '../../../server/data';
 import SimpleSampler from '../utils/SimpleSampler';
-import Survey from './Survey.vue';
+import SurveyComponent from '../components/Survey.vue';
 
 export default {
-  components: { Survey },
-  // surveyData should be imported from ../../../server/data/surveyX
-  // sampleSets sould be defined as samples.surveyX.answers, samples being
-  // imported from ../../../server/data/samples
-  // sampleSetStateId should be surveyXSampleSet (as defined in games schema)
-  props: [ 'title', 'surveyData', 'offset', 'sampleSets', 'sampleSetStateId' ],
+  components: { SurveyComponent },
   data() {
     return {
       gameState: this.$experience.gameState,
       playerState: this.$experience.playerState,
       sampler: null,
+      sampleSets: samples.survey.answers,
       sampleSetIndex: 0,
+      title: '',
+      items: [],
       unsubscribe: () => {},
     };
   },
   mounted() {
     this.unsubscribe = this.gameState.subscribe(async updates => {
-      if (updates.hasOwnProperty(this.sampleSetStateId)) {
-        this.sampleSetIndex = updates[this.sampleSetStateId];
+      if (updates.hasOwnProperty('surveyData')) {
+        const { title, items } = surveyData[updates.surveyData];
+        this.title = title;
+        this.items = items;
+      }
+
+      if (updates.hasOwnProperty('surveySampleSet')) {
+        this.sampleSetIndex = updates.surveySampleSet;
       }
     });
 
-    this.sampleSetIndex = this.gameState.getValues()[this.sampleSetStateId];
+    // const { surveyData, surveySampleSet } = this.gameState.getValues();
+    // this.title = surveyData.title;
+    // this.items = surveyData.items;
+    // this.sampleSetIndex = surveySampleSet;
+
+    const gameStateValues = this.gameState.getValues();
+    const { title, items } = surveyData[gameStateValues.surveyData];
+    this.title = title;
+    this.items = items;
+    this.sampleSetIndex = gameStateValues.surveySampleSet;
+
     this.sampler = new SimpleSampler(this.$experience.audio.audioContext);
   },
   beforeDestroy() {

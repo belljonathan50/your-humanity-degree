@@ -3,34 +3,31 @@
     <div class="page-wrapper">
       <transition name="fade">
         <component :is="currentPage" />
-        <!-- </component> -->
       </transition>
     </div>
-    <!--
-    <music-loader
-      :started="started"
-      :style="{ visibility: showLoader ? 'visible' : 'hidden' }"
-      @start="onStart"
-    />
-    -->
     <toast
       v-bind:class="{ hidden: !showToast || !liveMode }"
       :content="toastMessage"
+    />
+    <notification
+      v-bind:class="{ hidden: !showNotification }"
+      :content="notificationMessage"
     />
   </div>
 </template>
 
 <script>
 import './pages';
-import flyingWords from '../../server/data/flying-words';
+import { flyingWords } from '../../server/data';
 import Timeline from './utils/Timeline';
 import SimpleSampler from './utils/SimpleSampler';
+import Notification from './components/Notification.vue';
 import Toast from './components/Toast.vue';
 
 const timeline = new Timeline();
 
 export default {
-  components: { Toast },
+  components: { Notification, Toast },
   data() {
     return {
       // started: false, // for automatic mode
@@ -39,6 +36,8 @@ export default {
       // showLoader: false,
       showToast: false,
       toastMessage: '',
+      showNotification: false,
+      notificationMessage: '',
       client: this.$experience.client,
       liveModeState: this.$experience.liveModeState,
       globalState: this.$experience.globalState,
@@ -53,24 +52,23 @@ export default {
     if (this.liveMode) {
       this.$experience.gameState = await this.client.stateManager.attach('games');
     } else {
-      // display loader spinner here (please wait while loading instrumental score ...)
       this.$experience.gameState = await this.client.stateManager.create('games');
-
-      // this.showLoader = true;
-      // also load instrumental score mp3 here !
     }
 
     // make gameState available to all components :
+
     this.gameState = this.$experience.gameState;
 
-    // live mode subscription in cas we want to display a message :
+    ////////// live mode subscription (in case we want to display a message) :
+
     this.liveModeState.subscribe(async updates => {
       if (updates.hasOwnProperty('liveMode')) {
         // this.liveMode = updates.liveMode;
       }
     });
 
-    // global parameters subscriptions :
+    ////////// global parameters subscriptions :
+
     this.globalState.subscribe(async updates => {
       if (updates.hasOwnProperty('showToast')) {
         this.showToast = updates.showToast;
@@ -85,9 +83,36 @@ export default {
       }
     });
 
+    ////////// game parameters subscriptions :
+
     this.gameState.subscribe(async updates => {
       if (updates.hasOwnProperty('currentPage')) {
         this.currentPage = updates.currentPage;
+      }
+
+      if (updates.hasOwnProperty('hideNotificationDelay')) {
+        this.hideNotificationDelay = updates.hideNotificationDelay;
+      }
+
+      if (updates.hasOwnProperty('showNotification')) {
+        this.showNotification = updates.showNotification;
+      }
+
+      if (updates.hasOwnProperty('notificationMessage')) {
+
+        if (this.notificationTimeout) {
+          clearTimeout(this.notificationTimeout);
+          this.notificationTimeout = null;
+        };
+
+        this.notificationMessage = updates.notificationMessage;
+        this.showNotification = true;
+
+        if (this.hideNotificationDelay >= 0) {
+          this.notificationTimeout = setTimeout(() => {
+            this.showNotification = false;
+          }, this.hideNotificationDelay);
+        }
       }
 
       if (updates.hasOwnProperty('started')) {
@@ -112,6 +137,10 @@ export default {
       this.showToast = showToast;
       this.toastMessage = toastMessage;
     } else {
+      const { hideNotificationDelay } = this.gameState.getValues();
+
+      this.hideNotificationDelay = hideNotificationDelay;
+
       this.playerState.subscribe(async updates => {
         if (updates.started === true) {
           this.onStart();
@@ -125,14 +154,18 @@ export default {
     // (see also commented snippet in server/ControllerExperience.js) :
     // this.$experience.client.socket.addListener('liveMode', data => console.log(data));
 
-    document.body.addEventListener('touchmove', this.preventTouchEvents, {
-      passive: false
-    });
+    document.body.addEventListener(
+      'touchmove',
+      this.preventTouchEvents,
+      { passive: false }
+    );
   },
   beforeDestroy() {
-    document.body.removeEventListener('touchmove', this.preventTouchEvents, {
-      passive: false
-    });
+    document.body.removeEventListener(
+      'touchmove',
+      this.preventTouchEvents,
+      { passive: false }
+    );
   },
   methods: {
     // see :
@@ -161,12 +194,16 @@ export default {
       timeline.setState(this.gameState);
       timeline.start();
 
-      const musicPlayer = new SimpleSampler(this.$experience.audio.audioContext);
-      const buffer = this.$experience.audioBufferLoader.data.score;
-      musicPlayer.play(buffer);
+      this.$experience.scorePlayer.currentTime = 0;
+      this.$experience.scorePlayer.play();
+      // const musicPlayer = new SimpleSampler(this.$experience.audio.audioContext);
+      // const buffer = this.$experience.audioBufferLoader.data.score;
+      // musicPlayer.play(buffer);
 
       timeline.on('finished', async () => {
-        musicPlayer.stop();
+        this.$experience.scorePlayer.pause();
+        // musicPlayer.stop();
+
         // this.started = false;
         // this.showLoader = true;
         await this.playerState.set({ started: false });

@@ -72,6 +72,7 @@ export default {
     async onStart() {
       this.started = true;
 
+      /*
       if (!this.$experience.audioBufferLoader.data.score) {
         this.lastDate = Date.now();
         this.rafId = requestAnimationFrame(this.updateAnimationFrame);
@@ -79,6 +80,26 @@ export default {
         await this.$experience.audioBufferLoader.load({
           score: 'sounds/score/score.mp3',
         });
+      }
+      //*/
+
+      if (!this.$experience.scorePlayer) {
+        this.$experience.scorePlayer = new Audio('sounds/score/score.mp3');
+        this.$experience.scorePlayer.loop = false;
+        // we can eventually adjust volume :
+        // this.audio.volume = 0.5;
+        await new Promise(async (resolve, reject) => {
+
+          this.$experience.scorePlayer.addEventListener('canplaythrough', async event => {
+            console.log('we should be able to play through whole score, we might start now');
+            // this.audio.play();
+            resolve();
+          });
+        });
+      // } else {
+      //   this.audio.pause();
+      //   this.audio.currentTime = 0;
+      //   this.audio.play();
       }
 
       await this.$experience.playerState.set({ started: true });

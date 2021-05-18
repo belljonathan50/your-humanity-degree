@@ -1,11 +1,13 @@
-import liveMode from './liveMode';
-import globals from './globals';
+import controller from './controller';
 import games from './games';
+import globals from './globals';
+import liveMode from './liveMode';
 import player from './player';
 
 export default {
-  liveMode,
-  globals,
+  controller,
   games,
+  globals,
+  liveMode,
   player,
 };

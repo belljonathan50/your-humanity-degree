@@ -16,9 +16,10 @@
         </div>
         <div
           :style="{
-          visibility: disabled[word.text] ? 'hidden' : 'visible',
+            visibility: disabled[word.text] ? 'hidden' : 'visible',
+            'white-space': 'nowrap',
           }">
-          {{ word.text }}
+          <nobr> {{ word.text }} </nobr>
         </div>
       </div>
     </div>

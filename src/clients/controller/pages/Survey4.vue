@@ -1,5 +1,5 @@
 <template>
-  <div id="controller-survey-1"></div>
+  <div id="controller-survey-4"></div>
 </template>
 
 <script>
@@ -15,7 +15,7 @@ export default {
       label: 'answer sample set',
       options: schema.surveySampleSet.list,
       default: schema.surveySampleSet.default,
-      container: '#controller-survey-1',
+      container: '#controller-survey-4',
       callback: value => {
         state.set({ surveySampleSet: value });
       },
