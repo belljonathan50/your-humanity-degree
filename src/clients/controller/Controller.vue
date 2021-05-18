@@ -6,6 +6,8 @@
       flex-direction: column;
       overflow-y: auto;
     ">
+
+    <!--------------------------------- HEADER -------------------------------->
     <div
       style="
         flex: 0 1 auto;
@@ -15,14 +17,18 @@
         color: white;
         background-color: black;
       ">
+      <!-------------------------------- TITLE -------------------------------->
       <div style="flex: 1 1 auto; padding: 2rem;">
         Your Humanity Degree
       </div>
+      <!------------------------------ LIVE MODE ------------------------------>
       <div style="flex: 0 1 auto; padding: 2rem;">
         live mode
         <input type="checkbox" @change="onModeChange" v-model="liveMode"/>
       </div>
     </div>
+
+    <!--------------------------------- TOAST --------------------------------->
     <div
       style="
         font-size: 1.5rem;
@@ -37,6 +43,9 @@
       <div id="toast-controller">
       </div>
     </div>
+
+
+    <!-------------------------- ALL OTHER CONTROLS --------------------------->
     <div
       style="
         flex: 1 0 auto;
@@ -44,15 +53,16 @@
         color: black;
         background-color: #aaa;
       ">
+      <!------------------------------- TABS ---------------------------------->
       <tabs
         :pages="controllerPages"
         :currentPage="currentControllerPage"
         v-on:tab="onClickTab" />
+      <!----------------------------- CONTROLS -------------------------------->
       <div
         style="
           padding: 5px;
         ">
-        <!-- <component :is="currentControllerPage" /> -->
         <all-controls />
       </div>
     </div>
@@ -61,9 +71,8 @@
 
 <script>
 import * as controllers from '@ircam/basic-controllers';
-import Tabs from './components/Tabs.vue';
-import AllControls from './pages/AllControls.vue';
-// import './pages';
+import Tabs from './Tabs.vue';
+import AllControls from './AllControls.vue';
 
 export default {
   components: { Tabs, AllControls },
@@ -73,7 +82,7 @@ export default {
       globalState: this.$experience.globalState,
       gameState: this.$experience.gameState,
       controllerState: this.$experience.controllerState,
-      controllerPages: null,//Object.keys(controllerPages),
+      controllerPages: null,
       currentControllerPage: null,
       currentPage: null,
       liveMode: false,

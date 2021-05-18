@@ -22,11 +22,3 @@ Object.keys(pages).forEach(p => {
 });
 
 export default pages;
-
-// Vue.component('loader', Loader);
-// Vue.component('welcome', Welcome);
-// Vue.component('survey', Survey);
-// Vue.component('flyingWords', FlyingWords);
-// Vue.component('puzzle', Puzzle);
-// Vue.component('end', End);
-// Vue.component('thankyou', ThankYou);

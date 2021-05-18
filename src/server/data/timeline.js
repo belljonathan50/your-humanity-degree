@@ -20,7 +20,7 @@ const pageChanges = [
     date: '0:3.500',
     params: {
       currentPage: 'survey',
-      surveyData: '1',
+      surveyData: 'survey1',
     },
   },
   /////////////////////////////////////////////////////////////// FLYING WORDS 1
@@ -38,7 +38,7 @@ const pageChanges = [
     date: '5:10.600',
     params: {
       currentPage: 'survey',
-      surveyData: '2',
+      surveyData: 'survey2',
     },
   },
   ////////////////////////////////////////////////////// SLIDER (FLYING WORDS 2)
@@ -54,7 +54,7 @@ const pageChanges = [
     date: '6:45.880',
     params: {
       currentPage: 'survey',
-      surveyData: '3',
+      surveyData: 'survey3',
     },
   },
   /////////////////////////////////////////////////////////////// FLYING WORDS 3
@@ -78,7 +78,7 @@ const pageChanges = [
     date: '10:55.500',
     params: {
       currentPage: 'survey',
-      surveyData: '4',
+      surveyData: 'survey4',
     },
   },
   ////////////////////////////////////////////////////// SLIDER (FLYING WORDS 3)
@@ -112,7 +112,7 @@ const pageChanges = [
   },
   // special mandatory end item allowing to loop over immediately (or stop)
   {
-    date: '14:30.0000', // endDate
+    date: '15:35.0000', // endDate
     params: {
       currentPage: 'loader',
     },
@@ -354,6 +354,24 @@ const messages = [
     date: '13:58.8523',
     params: {
       notificationMessage: 'I hope Beethoven will like it, hmmm, not sure...',
+    },
+  },
+  {
+    date: '14:18.1209',
+    params: {
+      notificationMessage: 'All fine? Hope you haven\'t been overcharged',
+    },
+  },
+  {
+    date: '14:47.8637',
+    params: {
+      notificationMessage: 'Thanks for your participation and congratulations to the musicians, they played so wounderfully ! Don\'t hesitate to listen to the piece again, there are many different ways to access, or... even only listen to the music.',
+    },
+  },
+  {
+    date: '15:14.1541',
+    params: {
+      notificationMessage: 'why I do this? because music can also be for fun :) fun but fun and serious!',
     },
   },
 ];

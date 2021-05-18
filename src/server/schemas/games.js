@@ -6,7 +6,6 @@ import {
 const surveyNbDatasets = Object.keys(surveyData).length;
 const surveyDatasets = [];
 for (let i = 0; i < surveyNbDatasets; i++) {
-  // surveyDatasets.push(`${i + 1}`);
   surveyDatasets.push(Object.keys(surveyData)[i]);
 }
 
@@ -44,7 +43,7 @@ export default {
     type: 'integer',
     min: -1,
     max: 1e9,
-    default: 5000,
+    default: 6000,
   },
   notificationMessage: {
     type: 'any',
@@ -63,11 +62,7 @@ export default {
       'thankyou',      
     ],
   },
-  // currentPage: {
-  //   type: 'enum',
-  //   default: pageIds[0],
-  //   list: pageIds,
-  // },  
+  // survey general :
   surveyData: {
     type: 'enum',
     default: surveyDatasets[0],
@@ -78,12 +73,6 @@ export default {
     default: surveySampleSets[0],
     list: surveySampleSets,
   },
-  // survey 1 :
-  // survey1SampleSet: {
-  //   type: 'enum',
-  //   default: 0,
-  //   list: survey1SampleSets,
-  // },
   // flying words general :
   flyingWordsShowSliders: {
     type: 'boolean',
@@ -105,46 +94,10 @@ export default {
     default: flyingWordsGranularSampleSets[0],
     list: flyingWordsGranularSampleSets,
   },
-  // flying words 1 :
-  // flyingWords1PadSampleSet: {
-  //   type: 'enum',
-  //   default: flyingWords1PadSampleSets[0],
-  //   list: flyingWords1PadSampleSets,
-  // },
-  // flyingWords 2 :
-  // not needed, will be imported directly from page
-  // flyingWords2GranularSampleSet: {
-  //   type: 'any',
-  //   default: flyingWords2GranularSampleSets,
-  // },
-  // survey 2 :
-  // survey2SampleSet: {
-  //   type: 'enum',
-  //   default: 0,
-  //   list: survey2SampleSets,
-  // },
   // puzzle general :
   puzzleSampleSet: {
     type: 'enum',
     default: puzzleSampleSets[0],
     list: puzzleSampleSets,
   },
-  // puzzle 1 :
-  // puzzle1SampleSet: {
-  //   type: 'enum',
-  //   default: puzzle1SampleSets[0],
-  //   list: puzzle1SampleSets,
-  // },
-  // flyingWords 3 :
-  // not needed, will be imported directly from page
-  // flyingWords3GranularSampleSet: {
-  //   type: 'any',
-  //   default: flyingWords3GranularSampleSets,
-  // },
-  // survey 3 :
-  // survey3SampleSet: {
-  //   type: 'enum',
-  //   default: 0,
-  //   list: survey3SampleSets,
-  // },
 };

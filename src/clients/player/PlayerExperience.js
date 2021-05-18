@@ -29,14 +29,6 @@ class PlayerExperience extends AbstractExperience {
     this.globalState = await this.client.stateManager.attach('globals');
     this.playerState = await this.client.stateManager.create('player');
 
-    // this.states = {};
-    // this.states.globals = await this.client.stateManager.attach('globals');
-    // this.states.game1 = await this.client.stateManager.attach('game1');
-    // this.states.game2 = await this.client.stateManager.attach('game2');
-    // this.states.game3 = await this.client.stateManager.attach('game3');
-    // this.states.game4 = await this.client.stateManager.attach('game4');
-    // this.states.game5 = await this.client.stateManager.attach('game5');
-
     Vue.prototype.$experience = this;
 
     this.vue = new Vue({
@@ -44,29 +36,6 @@ class PlayerExperience extends AbstractExperience {
       render: h => h(Player),
     });
   }
-
-  // _getPartNameFromIndex(i) {
-  //   return `score/part-${(i+1)<10?'0':''}${(i+1)}`;
-  // }
-
-  // playInstrumentalPart(partIndex, bufferOffset = 0) {
-  //   const name = this._getPartNameFromIndex(partIndex);
-  //   console.log('starting buffer ' + name);
-  //   const buffer = this.audioBufferLoader.data[name];
-  //   const duration = buffer.duration - bufferOffset;
-  //   const now = this.audioContext.currentTime;
-
-  //   const src = this.audioContext.createBufferSource();
-  //   src.buffer = buffer;
-  //   src.connect(this.audioContext.destination);
-  //   src.start(now, bufferOffset, duration); // offset in seconds  
-  //   src.addEventListener('ended', () => {
-  //     if (partIndex + 1 < nbScoreParts) {
-  //       this.playInstrumentalPart(partIndex + 1);
-  //     }
-  //     console.log('buffer ' + name + ' ended');
-  //   });
-  // }
 }
 
 export default PlayerExperience;

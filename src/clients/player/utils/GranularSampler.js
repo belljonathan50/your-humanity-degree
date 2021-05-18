@@ -3,6 +3,7 @@ import * as audio from 'waves-audio';
 class GranularSampler {
   constructor(options = {}) {
     this.engine = new audio.GranularEngine(options);
+    this.engine.periodAbs = 0.02;
     this.duration = this.engine.buffer ? this.engine.buffer.duration : 0;
     this.normalizedPosition = 0;
     this.playing = false;
