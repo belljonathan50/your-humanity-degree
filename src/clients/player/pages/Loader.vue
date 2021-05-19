@@ -84,11 +84,14 @@ export default {
       //*/
 
       if (!this.$experience.scorePlayer) {
+        this.lastDate = Date.now();
+        this.rafId = requestAnimationFrame(this.updateAnimationFrame);
+
         this.$experience.scorePlayer = new Audio('sounds/score/score.mp3');
         this.$experience.scorePlayer.loop = false;
         // we can eventually adjust volume :
         // this.audio.volume = 0.5;
-        await new Promise(async (resolve, reject) => {
+        const p = new Promise(async (resolve, reject) => {
 
           this.$experience.scorePlayer.addEventListener('canplaythrough', async event => {
             console.log('we should be able to play through whole score, we might start now');
@@ -96,6 +99,12 @@ export default {
             resolve();
           });
         });
+
+        // mandatory on safari
+        // see https://stackoverflow.com/questions/49792768/js-html5-audio-why-is-canplaythrough-not-fired-on-ios-safari
+        this.$experience.scorePlayer.load();
+        
+        await p;
       // } else {
       //   this.audio.pause();
       //   this.audio.currentTime = 0;
