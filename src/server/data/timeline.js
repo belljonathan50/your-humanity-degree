@@ -112,7 +112,7 @@ const pageChanges = [
   },
   // special mandatory end item allowing to loop over immediately (or stop)
   {
-    date: '15:35.0000', // endDate
+    date: '15:44.0000', // endDate
     params: {
       currentPage: 'loader',
     },
