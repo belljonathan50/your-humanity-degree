@@ -38,6 +38,11 @@ html, body {
   text-align: justify;
 }
 
+a, .pink {
+  text-decoration: none;
+  color: #ff0098;
+}
+
 body.blink {
   animation-name: blink;
   animation-duration: .1s;
@@ -168,6 +173,21 @@ div.scrolly {
   opacity: 0;
   visibility: hidden;
   transition: opacity .5s, visibility .5s;
+}
+
+.toast.notification {
+  justify-content: flex-end;
+}
+
+.toast.notification > .not-subtitle {
+  color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* * * * * * * * * * * * * * * * * * SURVEY * * * * * * * * * * * * * * * * * */

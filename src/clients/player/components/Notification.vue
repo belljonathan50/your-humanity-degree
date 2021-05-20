@@ -1,6 +1,9 @@
 <template>
-  <div class="toast" style="text-align: justify;">
-    {{ content }}
+  <div
+    class="toast notification pink"
+    style="text-align: justify;"
+    v-html="content">
+    <!-- {{ content }} -->
   </div>
 </template>
 
