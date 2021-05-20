@@ -21,6 +21,7 @@ const pageChanges = [
     params: {
       currentPage: 'survey',
       surveyData: 'survey1',
+      hideNotificationDelay: 5000,
     },
   },
   /////////////////////////////////////////////////////////////// FLYING WORDS 1
@@ -105,9 +106,10 @@ const pageChanges = [
   },
   //////////////////////////////////////////////////////////////////// THANK YOU
   {
-    date: '14:00.000',
+    date: '14:15.000',
     params: {
       currentPage: 'thankyou',
+      notificationHideDelay: 10000,
     },
   },
   // special mandatory end item allowing to loop over immediately (or stop)
@@ -161,12 +163,12 @@ const messages = [
       notificationMessage: 'resonance -> fragments',
     },
   },
-  {
-    date: '2:56.3477',
-    params: {
-      notificationMessage: 'Quotation of symphony Nr.3 plus a bit jazzy',
-    },
-  },
+  // {
+  //   date: '2:56.3477',
+  //   params: {
+  //     notificationMessage: 'Quotation of symphony Nr.3 plus a bit jazzy',
+  //   },
+  // },
   {
     date: '3:40.2644',
     params: {
@@ -180,7 +182,7 @@ const messages = [
     },
   },
   {
-    date: '4:02.8705',
+    date: '4:07.8705',
     params: {
       notificationMessage: 'Which symphony was it? If you can\'t remember, then you will see the answer later, something Wagner talked about.',
     },
@@ -201,11 +203,11 @@ const messages = [
   {
     date: '4:39.2452',
     params: {
-      notificationMessage: 'So now my piece is also on the D major.',
+      notificationMessage: 'So now my piece is also in D major.',
     },
   },
   {
-    date: '4:52.4012',
+    date: '5:02.4012',
     params: {
       notificationMessage: 'A virtuose timpany passage, I think Beethoven may like it.',
     },
@@ -256,7 +258,7 @@ const messages = [
   {
     date: '7:30.9524',
     params: {
-      notificationMessage: 'Calling Beethoven :)',
+      notificationMessage: 'Dominica?',
     },
   },
   {
@@ -277,12 +279,12 @@ const messages = [
       notificationMessage: 'The famous C major chords of Sonata Nr.21, with which Mauricio Kagel has made a funny movie ("dans la tête de Ludwig van" in 1970), to celebrate Beethoven\'s 200th anniversary. Quotated quotation, complex.',
     },
   },
-  {
-    date: '8:30.7876',
-    params: {
-      notificationMessage: 'Here are some of my arpeggios mixing with Beethoven chords. Up and down, up and down.',
-    },
-  },
+  // {
+  //   date: '8:30.7876',
+  //   params: {
+  //     notificationMessage: 'Here are some of my arpeggios mixing with Beethoven chords. Up and down, up and down.',
+  //   },
+  // },
   {
     date: '9:03.8461',
     params: {
@@ -302,9 +304,12 @@ const messages = [
     },
   },
   {
-    date: '10:24.7384',
+    date: '10:31.7384',
     params: {
-      notificationMessage: 'Wagner called Beethoven\'s Seventh Symphony "the apotheosis of dance". I do agree, rhythm is also very important for me.',
+      notificationMessage: `
+        Wagner called Beethoven's Seventh Symphony "the apotheosis of dance",
+        I do agree, rhythm is also very important for me.
+      `,
     },
   },
   ////////// MESSAGE 31
@@ -317,7 +322,9 @@ const messages = [
   {
     date: '11:25.5338',
     params: {
-      notificationMessage: 'And some loops, the most popular contemporary composition technique.',
+      notificationMessage: `
+        And some loops, the most popular contemporary composition technique.
+      `,
     },
   },
   {
@@ -335,7 +342,10 @@ const messages = [
   {
     date: '12:41.1104',
     params: {
-      notificationMessage: 'The music is still continuing and growing, like the pianist\'s hair in Kagel\'s movie.',
+      notificationMessage: `
+        The music is still continuing and growing,
+        like the pianist's hair in Kagel's movie.
+      `,
     },
   },
   {
@@ -351,7 +361,7 @@ const messages = [
     },
   },
   {
-    date: '13:58.8523',
+    date: '14:08.8523',
     params: {
       notificationMessage: 'I hope Beethoven will like it, hmmm, not sure...',
     },
@@ -365,13 +375,55 @@ const messages = [
   {
     date: '14:47.8637',
     params: {
-      notificationMessage: 'Thanks for your participation and congratulations to the musicians, they played so wounderfully ! Don\'t hesitate to listen to the piece again, there are many different ways to access, or... even only listen to the music.',
+      notificationMessage: `
+        <div class="not-a-subtitle">
+          Thanks for your participation and congratulations to
+          the musicians, they played so wounderfully !
+          Don't hesitate to listen to the piece again, there are many different
+          ways to access, or... even only listen to the music.
+        </div>
+      `,
     },
   },
   {
     date: '15:14.1541',
     params: {
-      notificationMessage: 'why I do this? because music can also be for fun :) fun but fun and serious!',
+      notificationMessage: `
+        <div class="not-a-subtitle">
+          Why I do this? because music can also be for fun :)
+          Fun but fun and serious!
+        </div>
+      `,
+    },
+  },
+  {
+    date: '15:24.1541',
+    params: {
+      notificationMessage: `
+        <div class="not-a-subtitle">
+          Thanks to Jan Termath, Consord ensemble and Klangzeit Festival for the
+          commission with supports of BTHVN2020 and Simens Foundation.
+        </div>
+      `,
+    },
+  },
+  {
+    date: '15:34.1541',
+    // date: '0:03.500',
+    params: {
+      notificationMessage: `
+        <div class="not-a-subtitle">
+          web app development <br>
+          <a href="https://josephlarralde.fr"> Joseph Larralde </a> <br>
+          &nbsp; <br>
+          composition & conception <br>
+          <a href="https://huihuicheng.com/"> Huihui Cheng </a> <br>
+          &nbsp; <br>
+          studio recording version <br>
+          Concord ensemble <br>
+          2020
+        </div>
+      `,
     },
   },
 ];
