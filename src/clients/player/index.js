@@ -71,7 +71,8 @@ async function launch($container, index) {
     // launch application
     // -------------------------------------------------------------------
     await client.init(config);
-    initQoS(client);
+    // see https://github.com/collective-soundworks/soundworks/issues/36#issuecomment-844984779
+    initQoS(client, { visibilityChange: false });
 
     const experience = new PlayerExperience(client, config, $container);
     // store exprience for emulated clients
