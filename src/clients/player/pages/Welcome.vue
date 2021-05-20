@@ -6,12 +6,17 @@
       </div>
 
       <div style="padding: .75em 0;">
+        Duration ca. 15 min.
+      </div>
+
+      <div style="padding: .75em 0;">
         &ldquo;The reason for friendship requires the greatest similarity of the souls and hearts of men.&rdquo;
         <div style="width: 100%; text-align: right;"> --Beethoven </div>
       </div>
 
       <div style="padding: .75em 0;">
         Let's see how close your souls are to Beethoven!
+        <div style="width: 100%; text-align: right;"> --Huihui </div>
       </div>
 
       <div style="padding: .75em 0;">
