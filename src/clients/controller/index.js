@@ -27,6 +27,7 @@ async function launch($container, index) {
     // -------------------------------------------------------------------
     await client.init(config);
     // see https://github.com/collective-soundworks/soundworks/issues/36#issuecomment-844984779
+    // initQoS(client);
     initQoS(client, { visibilityChange: false });
 
     const experience = new ControllerExperience(client, config, $container);
