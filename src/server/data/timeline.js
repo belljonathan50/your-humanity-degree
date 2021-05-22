@@ -109,7 +109,7 @@ const pageChanges = [
     date: '14:15.000',
     params: {
       currentPage: 'thankyou',
-      notificationHideDelay: 10000,
+      hideNotificationDelay: 10000,
     },
   },
   // special mandatory end item allowing to loop over immediately (or stop)
@@ -369,7 +369,7 @@ const messages = [
   {
     date: '14:18.1209',
     params: {
-      notificationMessage: 'All fine? Hope you haven\'t been overcharged',
+      notificationMessage: `All fine? Hope you haven't been overcharged`,
     },
   },
   {
@@ -409,7 +409,6 @@ const messages = [
   },
   {
     date: '15:34.1541',
-    // date: '0:03.500',
     params: {
       notificationMessage: `
         <div class="not-a-subtitle">
