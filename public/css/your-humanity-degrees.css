@@ -179,7 +179,7 @@ div.scrolly {
   justify-content: flex-end;
 }
 
-.toast.notification > .not-subtitle {
+.toast.notification > .not-a-subtitle {
   color: white;
   width: 100%;
   height: 100%;
