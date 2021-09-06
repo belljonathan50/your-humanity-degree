@@ -257,7 +257,29 @@ const samples = {
 
   puzzle: {
     pads: [
-      [],
+      [
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+      ],
+      [
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+        'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 'interaction/inter-7-3', 
+      ],
+      
       // ...
     ],
   },
