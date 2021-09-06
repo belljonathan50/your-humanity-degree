@@ -227,18 +227,18 @@ const samples = {
   flyingWords: {
     pads: [
       [
-        // 'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
-        // 'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
-        // 'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
-        // 'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
-        // 'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
+        'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
+        'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
+        'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
+        'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
+        'quick/quick13', 'quick/quick14', 'quick/quick15', 'quick/quick16', 'quick/quick17',
       ],
       [
-        // 'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
-        // 'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
-        // 'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
-        // 'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
-        // 'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
+        'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
+        'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
+        'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
+        'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
+        'quick/quick18', 'quick/quick19', 'quick/quick20', 'quick/quick21', 'quick/quick22',
       ],
       // ...
     ],
